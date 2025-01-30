@@ -54,6 +54,9 @@ app = FastAPI(
     """,
 )
 
+@app.get("/")
+def read_root():
+    return {"message": "API is running!"}
 
 # Users in memory
 users: Dict[str, Dict] = {}
@@ -71,7 +74,6 @@ class MessageResponse(BaseModel):
     success: bool
 
 
-@app.post("/api/conversation/start")
 @app.post("/api/conversation/start")
 async def start_conversation(language: str = "en"):
     """Start a new chatbot conversation and return a greeting."""
