@@ -1,114 +1,78 @@
-"""Module main for FastAPI Chatbot."""
+"""FastAPI Chatbot Application - Entry Point."""
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 
-# ✅ Standard Library Imports
-import logging
-from typing import Dict
+# Load environment variables FIRST
+from dotenv import load_dotenv
+load_dotenv()
 
-# ✅ Third-Party Imports
-from fastapi import FastAPI, HTTPException
-from pydantic import BaseModel
-
-# ✅ Local Application Imports
-from backend.services.chatbot_service import ChatbotService
-from backend.utils.session_manager import SessionManager
-
-# ✅ Initialization
-session_manager = SessionManager()
-chatbot_service = ChatbotService()
-
-# Configuration logging
-logging.basicConfig(level=logging.DEBUG)
-logger = logging.getLogger(__name__)
-
-app = FastAPI(
-    title="Chatbot API 🤖💬",
-    version="1.0.0",
-    description="""
-    ## 🚀 How to Use the API:
-
-    1️⃣ **Start a conversation** using `/api/conversation/start`
-    2️⃣ **Use the received `session_id`** to send messages via `/api/conversation/message`
-
-    ### 🔹 Example:
-    ```python
-    # 1️⃣ Start a conversation
-    POST /api/conversation/start?language=en
-    Response: {
-        "session_id": "c1091cdd-0d71-4645-9579-ce171f7393d5",
-        "message": "Hello! 👋",
-        "success": true
-    }
-
-    # 2️⃣ Send a message using the session_id
-    POST /api/conversation/message?user_id=c1091cdd-0d71-4645-9579-ce171f7393d5&message=Hello
-    Response: {
-        "message": "Hi there! 😊",
-        "success": true
-    }
-    ```
-
-    ✅ **Features:**
-    - Supports multiple languages 🌍 (English, Norwegian, etc.)
-    - Keeps track of conversation history 📜
-    - Uses NLP to provide smart responses 🤖✨
-    """,
-)
-
-@app.get("/")
-def read_root():
-    return {"message": "API is running!"}
-
-# Users in memory
-users: Dict[str, Dict] = {}
+from app.core.config import settings
+from app.core.logging import setup_logging
+from app.api.v1.routes import conversation, health
 
 
-class StartResponse(BaseModel):
-    session_id: str
-    message: str
-    success: bool
+def create_app() -> FastAPI:
+    """Create and configure FastAPI application."""
+    
+    # Setup logging
+    setup_logging()
+    
+    # Create FastAPI app
+    app = FastAPI(
+        title=settings.APP_NAME,
+        version=settings.APP_VERSION,
+        debug=settings.DEBUG,
+        docs_url="/docs",  # ← Forzar docs siempre
+        redoc_url="/redoc",  # ← Forzar redoc siempre
+    )
+    
+    # Add CORS middleware
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.ALLOWED_ORIGINS,
+        allow_methods=settings.ALLOWED_METHODS,
+        allow_headers=settings.ALLOWED_HEADERS,
+    )
+    
+    # Include routers
+    app.include_router(
+        conversation.router, 
+        prefix=settings.API_V1_PREFIX
+    )
+    app.include_router(
+        health.router, 
+        prefix=settings.API_V1_PREFIX
+    )
+    
+    # Root endpoint
+    @app.get("/")
+    async def root():
+        return {
+            "message": f"{settings.APP_NAME} is running!",
+            "version": settings.APP_VERSION,
+            "debug": settings.DEBUG,
+            "docs": "/docs",
+            "endpoints": [
+                "GET /",
+                "GET /docs", 
+                "GET /api/v1/health",
+                "POST /api/v1/conversations/start",
+                "POST /api/v1/conversations/{session_id}/messages"
+            ]
+        }
+    
+    return app
 
 
-class MessageResponse(BaseModel):
-    session_id: str
-    message: str
-    success: bool
+# Create app instance
+app = create_app()
 
 
-@app.post("/api/conversation/start")
-async def start_conversation(language: str = "en"):
-    """Start a new chatbot conversation and return a greeting."""
-    session_id = session_manager.create_session(language)
-    # ✅ it is create and save it.
-    greeting = chatbot_service.get_greeting(language)
-
-    return {
-        "session_id": session_id,
-        "message": greeting,
-        "success": True
-    }
-
-
-@app.post("/api/conversation/message")
-async def process_message(user_id: str, message: str):
-    """Process user messages and return a chatbot response."""
-    session = session_manager.get_session(user_id)
-    if not session:
-        logging.warning(f"⚠️ Session not found: {user_id}")
-        raise HTTPException(
-            status_code=404,
-            detail="Session not found. Please start a new conversation."
-        )
-
-    response = chatbot_service.process_message(message)
-
-    return {
-        "session_id": user_id,
-        "message": response,
-        "success": True
-    }
-
-
-@app.get("/api/debug/sessions")
-async def debug_sessions():
-    """Devuelve las sesiones activas en memoria (para depuración)."""
-    return {"active_sessions": list(users.keys())}
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(
+        "app.main:app",
+        host=settings.HOST,
+        port=settings.PORT,
+        reload=True  # ← Forzar reload para development
+    )
