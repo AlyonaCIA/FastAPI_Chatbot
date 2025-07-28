@@ -1,18 +1,10 @@
-# Main framework
+# FastAPI Chatbot - Main Dependencies
+# For development, use: pip install -r requirements/dev.txt
+
 fastapi~=0.109.0
 uvicorn~=0.27.0
-
-# Data validation and type handling
 pydantic~=2.6.0
-
-# NLP dependencies
-scikit-learn~=1.4.0
-
-# Security and environment management
-python-dotenv~=1.0.0
-
-# Miscellaneous utilities
-cachetools~=6.1.0
-
-# Settings management (required for Pydantic v2)
 pydantic-settings~=2.1.0
+scikit-learn~=1.4.0
+python-dotenv~=1.0.0
+cachetools~=6.1.0
