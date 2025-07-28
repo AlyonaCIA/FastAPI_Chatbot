@@ -1,17 +1,17 @@
-"""Module for Chatbot Serrvices."""
-# ✅ Standard Library Imports
+"""Chatbot service with business logic."""
+# Standard library imports
 import logging
+import random
 from typing import List, Tuple
 
-# ✅ Third-Party Imports
+# Third-party imports
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
 
-# ✅ Local Application Imports
-from backend.config.data_loader import chatbot_data
+# Local application imports
+from app.infrastructure.data.loaders.chatbot_data import chatbot_data
 
-# Configurar logging
-logging.basicConfig(level=logging.INFO)
+
 logger = logging.getLogger(__name__)
 
 
@@ -24,23 +24,22 @@ class ChatbotService:
         self.questions, self.answers = self._load_data()
 
         if not self.questions:
-            raise ValueError("❌ No training data found. Check JSON structure.")
+            logger.warning("No training data found. Using basic responses.")
+            return
 
-        # Configurar vectorizador TF-IDF para preguntas
+        # Configure TF-IDF vectorizer
         self.vectorizer = TfidfVectorizer(
             min_df=1,
             strip_accents='unicode',
             lowercase=True,
-            # Considera unigramas y bigramas para mejorar coincidencias
             ngram_range=(1, 2)
         )
         self.question_vectors = self.vectorizer.fit_transform(self.questions)
 
-        logger.info(
-            f"✅ ChatbotService initialized with {len(self.questions)} QA pairs.")
+        logger.info(f"ChatbotService initialized with {len(self.questions)} QA pairs.")
 
     def _load_data(self) -> Tuple[List[str], List[str]]:
-        """Extracts questions and answers from chatbot_data."""
+        """Extract questions and answers from chatbot_data."""
         questions, answers = [], []
 
         try:
@@ -49,81 +48,107 @@ class ChatbotService:
                 replies = dialogue.get("replies", {}).get(self.language, [])
 
                 if not replies:
-                    logger.warning(
-                        f"⚠️ No replies found for dialogue ID: {dialogue.get('id', 'unknown')}")
+                    logger.warning(f"No replies found for dialogue ID: {dialogue.get('id', 'unknown')}")
                     continue
 
                 for sample in samples:
                     if not isinstance(sample, str) or not sample.strip():
                         continue
                     questions.append(sample.lower().strip())
-                    # Tomamos la primera respuesta como principal
-                    answers.append(replies[0])
+                    answers.append(random.choice(replies))  # ← Random reply
 
-            logger.info(
-                f"📥 Successfully loaded {len(questions)} questions and {len(answers)} answers.")
+            logger.info(f"Successfully loaded {len(questions)} questions and {len(answers)} answers.")
             return questions, answers
 
         except Exception as e:
-            logger.error(f"❌ Error loading chatbot data: {str(e)}")
-            raise
+            logger.error(f"Error loading chatbot data: {str(e)}")
+            return [], []
 
     def process_message(self, user_message: str) -> str:
-        """Finds the most relevant response using NLP similarity matching."""
+        """Find the most relevant response using NLP similarity matching."""
         if not user_message or not user_message.strip():
+            return self._get_fallback_response()
+
+        # Check for common greetings first
+        greeting_response = self._check_for_greeting(user_message)
+        if greeting_response:
+            return greeting_response
+
+        # If no training data, return fallback
+        if not self.questions:
             return self._get_fallback_response()
 
         try:
             user_message = user_message.lower().strip()
-            logger.debug(f"📩 Processing user message: '{user_message}'")
+            logger.debug(f"Processing user message: '{user_message}'")
 
             user_vector = self.vectorizer.transform([user_message])
-            similarities = cosine_similarity(
-                user_vector, self.question_vectors).flatten()
+            similarities = cosine_similarity(user_vector, self.question_vectors).flatten()
 
             best_match_idx = similarities.argmax()
             confidence = similarities[best_match_idx]
 
-            logger.debug(f"🔍 Best match confidence: {confidence:.4f}")
+            logger.debug(f"Best match confidence: {confidence:.4f}")
 
-            if confidence < 0.3:
-                logger.info(
-                    f"⚠️ Low confidence ({confidence:.2f}) for message: '{user_message}'. Returning fallback response.")
+            if confidence < 0.2:  # ← Reduced threshold
+                logger.info(f"Low confidence ({confidence:.2f}) for message: '{user_message}'")
                 return self._get_fallback_response()
 
             matched_question = self.questions[best_match_idx]
-            logger.info(
-                f"✅ Matched '{user_message}' to '{matched_question}' with confidence {confidence:.2f}")
+            logger.info(f"Matched '{user_message}' to '{matched_question}' with confidence {confidence:.2f}")
 
             return self.answers[best_match_idx]
 
         except Exception as e:
-            logger.error(f"❌ Error processing message: {str(e)}")
+            logger.error(f"Error processing message: {str(e)}")
             return self._get_fallback_response()
 
+    def _check_for_greeting(self, user_message: str) -> str:
+        """Check if message is a greeting and respond appropriately."""
+        greetings = ["hello", "hi", "hey", "hola", "hei", "hallo"]
+        user_lower = user_message.lower().strip()
+        
+        if any(greeting in user_lower for greeting in greetings):
+            return self.get_greeting(self.language)
+        
+        return None
+
     def get_greeting(self, language: str) -> str:
-        """Returns a greeting message based on the selected language."""
-        greetings = chatbot_data.get("greetings", {})
-
-        if isinstance(
-                greetings, dict):  # ✅ Accedemos a la clave 'replies' correctamente
-            language_greetings = greetings.get("replies", {}).get(
-                language, ["Hello! How can I assist you today?"])
-            if isinstance(language_greetings, list) and language_greetings:
-                # 🔥 Tomamos solo el primer mensaje disponible
-                return language_greetings[0]
-
-        return "Hello! How can I assist you today?"
+        """Return a greeting message based on the selected language."""
+        try:
+            greetings_list = chatbot_data.get("greetings", [])
+            
+            if greetings_list and len(greetings_list) > 0:
+                greeting_obj = greetings_list[0]
+                language_greetings = greeting_obj.get("replies", {}).get(
+                    language, ["Hello! How can I assist you today?"]
+                )
+                
+                if isinstance(language_greetings, list) and language_greetings:
+                    return random.choice(language_greetings)
+            
+            return "Hello! How can I assist you today?"
+            
+        except Exception as e:
+            logger.error(f"Error getting greeting: {str(e)}")
+            return "Hello! How can I assist you today?"
 
     def _get_fallback_response(self) -> str:
-        """Returns a fallback response when the chatbot does not understand the
-        message."""
+        """Return a fallback response when the chatbot doesn't understand."""
         try:
-            return chatbot_data.get("fallbacks", [{}])[0].get("replies", {}).get(
-                self.language, ["I'm sorry, I didn't understand that."])[0]
-        except (IndexError, AttributeError):
+            fallbacks_list = chatbot_data.get("fallbacks", [])
+            
+            if fallbacks_list and len(fallbacks_list) > 0:
+                fallback_obj = fallbacks_list[0]
+                language_fallbacks = fallback_obj.get("replies", {}).get(
+                    self.language, ["I'm sorry, I didn't understand that."]
+                )
+                
+                if isinstance(language_fallbacks, list) and language_fallbacks:
+                    return random.choice(language_fallbacks)
+            
             return "I'm sorry, I didn't understand that."
-
-
-# Crear una única instancia del chatbot para evitar múltiples cargas de datos
-chatbot_service = ChatbotService()
+            
+        except Exception as e:
+            logger.error(f"Error getting fallback: {str(e)}")
+            return "I'm sorry, I didn't understand that."
