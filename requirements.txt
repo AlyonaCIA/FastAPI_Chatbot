@@ -1,30 +1,24 @@
-# 📌 Main framework
-fastapi==0.109.0
-uvicorn==0.27.0
+# Main framework
+fastapi~=0.109.0
+uvicorn~=0.27.0
 
-# 📌 Data validation and type handling
-pydantic==2.6.1
+# Data validation and type handling
+pydantic~=2.6.0
 
-# 📌 Database (SQLAlchemy, SQLite is built into Python)
-sqlalchemy==2.0.25
+# Database (SQLAlchemy, SQLite is built into Python)
+sqlalchemy~=2.0.25
 
-# 📌 Testing tools
-pytest==8.0.0  # Main testing framework
-httpx==0.27.0  # Required for FastAPI's TestClient
+# Testing tools
+pytest~=8.0.0  # Main testing framework
+httpx~=0.27.0  # Required for FastAPI's TestClient
 
-# 📌 Linting and formatting
-flake8==7.0.0  # Code quality checks
-black==24.1.1  # Autoformatter
-isort==5.13.2  # Import sorting
+# Linting and formatting
+flake8~=7.0.0  # Code quality checks
+black~=24.1.0  # Autoformatter
+isort~=5.13.0  # Import sorting
 
-# 📌 Security and environment management
-python-dotenv==1.0.1  # Environment variable handling
+# Security and environment management
+python-dotenv~=1.0.0  # Environment variable handling
 
-# 📌 Miscellaneous utilities
-cachetools  # Caching utilities
-datetime  # Date and time handling (though already built into Python)
-
-# 🚀 NOTE: If I had more time, I would refine this further, such as:
-# - Grouping dependencies based on optional vs. required usage.
-# - Adding dependency constraints (`>=` or `~=`) where flexibility is needed.
-# - Splitting into `requirements-dev.txt` for development dependencies.
+# Miscellaneous utilities
+cachetools~=6.1.0  # Caching utilities
