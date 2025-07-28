@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+# This script provides functions for handling messages
+# with colored output in the terminal.
 
 # Check if tput is available
 if ! command -v tput &> /dev/null; then
@@ -6,10 +8,9 @@ if ! command -v tput &> /dev/null; then
     exit 1
 fi
 
-# Set the terminal type to support colors
 export TERM=xterm-256color
 
-# Define ANSI escape codes for colors and styles using tput
+# Define ANSI escape codes for colors and styles
 bold=$(tput bold)
 red=$(tput setaf 1)
 green=$(tput setaf 2)
@@ -17,10 +18,6 @@ yellow=$(tput setaf 3)
 reset=$(tput sgr0)
 
 # Function to print messages with specified color
-# Arguments:
-#   $1: Color code
-#   $2: Message type (INFO, WARNING, ERROR)
-#   $3: The actual message to be printed
 print_message() {
     local color=$1
     local type=$2
@@ -29,29 +26,16 @@ print_message() {
 }
 
 # Function to print info message
-# Arguments:
-#   $1: The info message to be printed
 info() {
-    print_message "$green" "INFO" "$1"
+    echo -e "${bold}${green}[INFO]${reset} $1"
 }
 
 # Function to print warning message
-# Arguments:
-#   $1: The warning message to be printed
 warning() {
-    print_message "$yellow" "WARNING" "$1"
+    echo -e "${bold}${yellow}[WARNING]${reset} $1"
 }
 
 # Function to print error message
-# Arguments:
-#   $1: The error message to be printed
-# Outputs the message to stderr
 error() {
-    print_message "$red" "ERROR" "$1" >&2
-}
-
-# Function to handle errors
-error_exit() {
-    error "$1"
-    exit 1
+    echo -e "${bold}${red}[ERROR]${reset} $1" >&2
 }
