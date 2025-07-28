@@ -1,175 +1,188 @@
-# 🗣️ FastAPI Chatbot
+# FastAPI Chatbot
 
-**Author**: Alyona Carolina Ivanova Araujo
-**Version**: 1.0.0
-**License**: MIT
+A production-ready chatbot API built with FastAPI that uses TF-IDF vectorization and cosine similarity for natural language processing and response generation.
 
-## **📌 Project Overview**
-This project is a **FastAPI-based chatbot API** that leverages **Natural Language Processing (NLP)** to generate responses based on predefined question-answer pairs. It uses **TF-IDF vectorization** to process and match user queries efficiently. The API is fully containerized with **Docker** and follows industry best practices for code organization, testing, and deployment.
+## Overview
 
-## **🎯 Key Features**
-✅ **FastAPI**: Lightweight and high-performance web framework.
-✅ **NLP-based chatbot**: Uses **TF-IDF vectorization** and **cosine similarity** for response generation.
-✅ **Session Management**: Keeps track of conversation states with UUID-based sessions.
-✅ **Structured Logging**: Integrated **logging** for debugging and monitoring.
-✅ **CI/CD Pipeline**: Automated linting, formatting, and testing using **GitHub Actions**.
-✅ **Containerized Deployment**: Runs seamlessly in a **Docker** container.
-✅ **Unit & Integration Tests**: Ensures API stability with **pytest** and **TestClient**.
+This project implements a RESTful chatbot service with session management, structured response matching, and comprehensive testing. The application is containerized and includes a complete CI/CD pipeline for automated testing and deployment.
 
----
+## Features
 
-## **📂 Project Structure**
-.
-├── README.md               # Project documentation
-├── api_documentation.md    # Auto-generated API documentation
-├── backend/                # Core backend API implementation
-│   ├── Dockerfile          # Docker container definition
-│   ├── main.py             # FastAPI application entry point
-│   ├── config/             # Configuration files
-│   │   ├── data_loader.py  # Loads chatbot data from JSON
-│   ├── data/               # Dataset for chatbot responses
-│   │   ├── kindly-bot.json # Predefined chatbot dialogues
-│   ├── services/           # Business logic implementation
-│   │   ├── chatbot_service.py # Core chatbot logic
-│   ├── utils/              # Utility functions (session handling, logging)
-│   │   ├── session_manager.py # Manages user sessions
-│   ├── schemas.py          # Pydantic schemas for API validation
-│   ├── test/               # Unit & Integration tests
-│   │   ├── unit_test/      # Unit tests
-│   │   ├── integration_test/ # Integration tests
-│   ├── ci/                 # CI/CD automation scripts
-│   ├── requirements.txt    # Python dependencies
-└── pytest.ini              # Pytest configuration
+- FastAPI-based REST API with automatic OpenAPI documentation
+- Natural language processing using TF-IDF vectorization and cosine similarity
+- UUID-based session management for conversation tracking
+- Structured logging for monitoring and debugging
+- Comprehensive test suite with unit and integration tests
+- Docker containerization for consistent deployments
+- Automated CI/CD pipeline with GitHub Actions
 
+## Architecture
 
----
+```
+backend/
+├── main.py                    # Application entry point
+├── schemas.py                 # Pydantic models for request/response validation
+├── config/
+│   └── data_loader.py         # Data loading utilities
+├── data/
+│   └── kindly-bot.json        # Chatbot training data
+├── services/
+│   └── chatbot_service.py     # Core chatbot logic
+├── utils/
+│   └── session_manager.py     # Session handling utilities
+└── test/
+    ├── unit_test/             # Unit tests
+    └── integration_test/       # Integration tests
+```
 
-## **📜 API Documentation**
-The chatbot API exposes the following endpoints:
+## API Endpoints
 
-### **1️⃣ Start a new conversation**
+### Start Conversation
 ```http
 POST /api/conversation/start?language=en
+```
 
-
-**Response:**
+Response:
 ```json
 {
-    "session_id": "c1091cdd-0d71-4645-9579-ce171f7393d5",
+    "session_id": "uuid-string",
     "message": "Hello! I am a chatbot.",
     "success": true
 }
 ```
 
-### **2️⃣ Send a message to the chatbot**
+### Send Message
 ```http
 POST /api/conversation/message
 ```
-**Request:**
+
+Request:
 ```json
 {
-    "user_id": "c1091cdd-0d71-4645-9579-ce171f7393d5",
-    "message": "Tell me a joke"
+    "user_id": "uuid-string",
+    "message": "user message"
 }
 ```
-**Response:**
+
+Response:
 ```json
 {
-    "session_id": "c1091cdd-0d71-4645-9579-ce171f7393d5",
-    "message": "Why don’t robots ever get lost? Because they always follow the algorithm!",
+    "session_id": "uuid-string",
+    "message": "chatbot response",
     "success": true
 }
 ```
 
-### **3️⃣ Debug Active Sessions**
+### Debug Sessions
 ```http
 GET /api/debug/sessions
 ```
-Returns a list of active user sessions.
 
----
+Returns list of active sessions for debugging purposes.
 
-## **🛠 Installation & Setup**
-### **🔹 1. Clone the Repository**
-```sh
-git clone https://github.com/your-username/full-stack-fastapi-template.git
-cd full-stack-fastapi-template
+## Installation
+
+### Local Development
+
+1. Clone the repository:
+```bash
+git clone <repository-url>
+cd fastapi-chatbot
 ```
 
-### **🔹 2. Create and Activate a Virtual Environment**
-```sh
+2. Create virtual environment:
+```bash
 python -m venv venv
-source venv/bin/activate  # On macOS/Linux
-venv\Scripts\activate     # On Windows
+source venv/bin/activate  # Linux/macOS
+# or
+venv\Scripts\activate     # Windows
 ```
 
-### **🔹 3. Install Dependencies**
-```sh
+3. Install dependencies:
+```bash
 pip install -r requirements.txt
 ```
 
-### **🔹 4. Run the FastAPI Server**
-```sh
+4. Run the application:
+```bash
 uvicorn backend.main:app --host 0.0.0.0 --port 8080 --reload
 ```
-API will be available at: [http://127.0.0.1:8080/docs](http://127.0.0.1:8080/docs)
 
----
+The API documentation will be available at `http://localhost:8080/docs`
 
-## **🐳 Running with Docker**
-### **🔹 1. Build the Docker Image**
-```sh
+### Docker Deployment
+
+1. Build the image:
+```bash
 docker build -t fastapi-chatbot .
 ```
-### **🔹 2. Run the Container**
-```sh
+
+2. Run the container:
+```bash
 docker run -p 8080:8080 fastapi-chatbot
 ```
-Now visit: [http://127.0.0.1:8080/docs](http://127.0.0.1:8080/docs)
 
----
+## Testing
 
-## **🧪 Running Tests**
-### **Unit Tests**
-```sh
+Run unit tests:
+```bash
 pytest backend/test/unit_test/
 ```
 
-### **Integration Tests**
-```sh
+Run integration tests:
+```bash
 pytest backend/test/integration_test/
 ```
 
----
+Run all tests with coverage:
+```bash
+pytest --cov=backend
+```
 
-## **🚀 CI/CD Pipeline**
-The project includes a **CI/CD pipeline** that automates:
-- **Code Formatting**: `isort` & `autopep8`
-- **Linting**: `flake8`
-- **Testing**: `pytest`
-- **Containerization**: `Docker`
-- **Deployment**: Configured for **GitHub Actions**
+## Development
 
----
+### Code Quality
 
-## **👨‍💻 Contributing**
-Pull requests are welcome! Please follow these steps:
+The project uses the following tools for code quality:
+- `flake8` for linting
+- `isort` for import sorting
+- `autopep8` for code formatting
 
-1. **Fork the repository**
-2. **Create a feature branch** (`git checkout -b feature-name`)
-3. **Commit your changes** (`git commit -m "Add new feature"`)
-4. **Push to GitHub** (`git push origin feature-name`)
-5. **Submit a Pull Request**
+Run quality checks:
+```bash
+flake8 backend/
+isort backend/
+autopep8 --recursive --in-place backend/
+```
 
----
+### CI/CD Pipeline
 
-## **📜 License**
-This project is licensed under the **MIT License**. See the [LICENSE](LICENSE) file for details.
+The GitHub Actions workflow automatically:
+- Runs code quality checks
+- Executes the full test suite
+- Builds and validates Docker images
+- Performs security scans
 
----
+## Configuration
 
-## **📞 Contact**
-For any inquiries, feel free to reach out:
-**Author**: Alyona Carolina Ivanova Araujo
-📧 Email: [alenacivanovaa@gmail.com](mailto:alenacivanovaa@gmail.com)
-🐙 GitHub: [github.com/your-username](https://github.com/your-username)
+The application can be configured through environment variables:
+- `LOG_LEVEL`: Logging level (default: INFO)
+- `PORT`: Application port (default: 8080)
+- `HOST`: Application host (default: 0.0.0.0)
+
+## Contributing
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Make your changes and add tests
+4. Ensure all tests pass and code quality checks succeed
+5. Submit a pull request with a clear description of changes
+
+## License
+
+This project is licensed under the MIT License. See LICENSE file for details.
+
+## Author
+
+Alyona Carolina Ivanova Araujo  
+Email: alenacivanovaa@gmail.com
