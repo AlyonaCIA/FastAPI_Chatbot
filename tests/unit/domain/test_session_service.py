@@ -16,6 +16,7 @@ def session_manager():
     """Fixture to initialize a new SessionManager instance."""
     return SessionManager()
 
+
 # ---------------------- #
 # TEST SESSION CREATION #
 # ---------------------- #
@@ -36,8 +37,9 @@ def test_create_session(session_manager):
     session_data = session_manager.get_session(session_id)
     assert session_data is not None, "Session should exist after creation"
     assert session_data["language"] == "en", "Session language should match"
-    assert isinstance(session_data["created_at"],
-                      datetime), "Created_at should be a datetime object"
+    assert isinstance(
+        session_data["created_at"], datetime
+    ), "Created_at should be a datetime object"
 
 
 def test_create_multiple_sessions(session_manager):
@@ -46,6 +48,7 @@ def test_create_multiple_sessions(session_manager):
     session_2 = session_manager.create_session("es")
 
     assert session_1 != session_2, "Session IDs should be unique"
+
 
 # ---------------------- #
 # TEST SESSION RETRIEVAL #
@@ -66,6 +69,7 @@ def test_get_nonexistent_session(session_manager):
     session_data = session_manager.get_session("invalid-session-id")
     assert session_data is None, "Nonexistent session should return None"
 
+
 # ---------------------- #
 # TEST SESSION UPDATES #
 # ---------------------- #
@@ -85,8 +89,10 @@ def test_update_existing_session(session_manager):
 def test_update_nonexistent_session(session_manager):
     """Test updating a non-existent session."""
     update_success = session_manager.update_session(
-        "invalid-session-id", {"language": "de"})
+        "invalid-session-id", {"language": "de"}
+    )
     assert not update_success, "Updating a nonexistent session should return False"
+
 
 # ---------------------- #
 # TEST SESSION DELETION #
