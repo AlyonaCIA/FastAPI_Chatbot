@@ -1,22 +1,124 @@
 # FastAPI Chatbot
 
-A production-ready chatbot API built with FastAPI that uses TF-IDF vectorization and cosine similarity for natural language processing and response generation.
+[![Python](https://img.shields.io/badge/Python-3.11%20%7C%203.12-blue?logo=python&logoColor=white)](https://www.python.org/)
+[![FastAPI](https://img.shields.io/badge/FastAPI-0.109.0-009688?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
+[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
+[![Imports: isort](https://img.shields.io/badge/%20imports-isort-%231674b1?style=flat&labelColor=ef8336)](https://pycqa.github.io/isort/)
+[![Type Checked: mypy](https://img.shields.io/badge/type%20checked-mypy-blue.svg)](http://mypy-lang.org/)
+[![License: AGPL-3.0](https://img.shields.io/badge/License-AGPL%203.0-blue.svg)](https://www.gnu.org/licenses/agpl-3.0)
+
+> **Author:** Alyona Carolina Ivanova Araujo  
+> **Email:** alenacivanovaa@gmail.com  
+> **Version:** 1.0.1
+
+A **production-ready** chatbot API built with FastAPI that leverages TF-IDF vectorization and cosine similarity for intelligent natural language processing and response generation.
 
 ## Overview
 
-This project implements a RESTful chatbot service following clean architecture principles with comprehensive session management, structured response matching, and enterprise-grade development tooling. The application is containerized and includes a complete CI/CD pipeline for automated testing and deployment.
+This project implements a RESTful chatbot service following **Clean Architecture** principles with comprehensive session management, structured response matching, and enterprise-grade development tooling. The application is fully containerized and includes a complete **CI/CD pipeline** for automated testing, quality assurance, and deployment.
 
-## Features
+### Why This Project Stands Out
 
-- **FastAPI-based REST API** with automatic OpenAPI documentation
-- **Natural Language Processing** using TF-IDF vectorization and cosine similarity
-- **Clean Architecture** with separation of concerns across domain, infrastructure, and API layers
-- **UUID-based session management** for conversation tracking
-- **Multilingual support** (English and Norwegian)
-- **Comprehensive test suite** with unit and integration tests
-- **Development tooling** with nox, pre-commit hooks, and automated formatting
-- **CI/CD pipeline** with GitHub Actions
-- **Docker containerization** for consistent deployments
+- **Clean Architecture**: Proper separation of concerns with domain-driven design
+- **Test-Driven Development**: Comprehensive unit and integration tests with 70%+ coverage
+- **CI/CD Ready**: Full GitHub Actions pipeline with matrix testing
+- **Modern Tooling**: Nox, pre-commit hooks, black, isort, flake8, mypy, safety
+- **Production Ready**: Docker support, structured logging, environment-based configuration
+- **Multilingual**: English and Norwegian support out of the box
+- **Type Safe**: Full type hints with mypy static type checking
+
+## Key Features
+
+### Core Functionality
+- **FastAPI Framework**: High-performance async REST API with automatic OpenAPI/Swagger documentation
+- **NLP Engine**: TF-IDF vectorization with cosine similarity for intelligent response matching
+- **Session Management**: UUID-based conversation tracking with configurable TTL
+- **Multilingual Support**: English (`en`) and Norwegian (`nb`) with extensible language system
+- **Confidence Scoring**: Adjustable threshold for response quality control
+
+### Architecture & Design
+- **Clean Architecture**: Domain-centric design with dependency inversion principle
+- **Repository Pattern**: Abstracted data access with interface-based design
+- **Dependency Injection**: Loose coupling through FastAPI's DI system
+- **Factory Pattern**: Centralized object creation and lifecycle management
+- **Service Layer**: Business logic isolated from HTTP and infrastructure concerns
+
+### Development Excellence
+- **Comprehensive Testing**: Unit tests, integration tests, and API endpoint tests
+- **Code Coverage**: 70%+ coverage with HTML and XML reports
+- **Code Formatting**: Black (88 chars) + isort with pre-commit hooks
+- **Static Analysis**: flake8 linting + mypy type checking
+- **Security Scanning**: Automated dependency vulnerability checks with Safety
+- **Nox Automation**: Isolated test environments matching CI/CD pipeline
+- **Pre-commit Hooks**: Automated quality checks before every commit
+
+### DevOps & Deployment
+- **Docker Ready**: Full containerization with docker-compose support
+- **CI/CD Pipeline**: GitHub Actions with matrix testing (Python 3.11, 3.12)
+- **Package Management**: Setuptools configuration with versioning
+- **Configuration Management**: Environment-based settings with pydantic-settings
+- **Structured Logging**: Configurable log levels and formatting
+- **CORS Support**: Configurable cross-origin resource sharing
+
+## Quick Start
+
+Get up and running in minutes:
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/AlyonaCIA/FastAPI_Chatbot.git
+cd FastAPI_Chatbot
+
+# 2. Setup development environment (recommended)
+./run_local.sh -i
+
+# 3. Run the application
+python -m app.main
+
+# 4. Test the API
+curl -X POST "http://localhost:8080/api/v1/conversations/start" \
+  -H "Content-Type: application/json" \
+  -d '{"language": "en"}'
+
+# 5. View interactive documentation
+open http://localhost:8080/docs
+```
+
+The API will be available at `http://localhost:8080` with:
+- **Swagger UI**: `http://localhost:8080/docs`
+- **ReDoc**: `http://localhost:8080/redoc`
+- **OpenAPI Schema**: `http://localhost:8080/openapi.json`
+
+## Technology Stack
+
+### Core Framework & Runtime
+- **Python 3.11/3.12**: Modern Python with latest performance improvements
+- **FastAPI 0.109.0**: High-performance async web framework
+- **Uvicorn 0.27.0**: Lightning-fast ASGI server
+- **Pydantic 2.6.0**: Data validation and settings management with pydantic-settings
+
+### NLP & Data Processing
+- **scikit-learn 1.4.0**: TF-IDF vectorization and cosine similarity
+- **cachetools 6.1.0**: Response caching for performance optimization
+
+### Development & Quality Tools
+- **Nox 2023.4.22**: Automated testing in isolated environments
+- **pytest 8.0.0**: Modern Python testing framework with plugins
+  - pytest-cov: Code coverage measurement
+  - pytest-mock: Mock object integration
+  - pytest-asyncio: Async test support
+- **Black 24.1.0**: Uncompromising code formatter (88 char line length)
+- **isort 5.13.0**: Import statement organizer with black compatibility
+- **flake8 7.0.0**: Style guide enforcement (PEP 8)
+- **mypy 1.8.0**: Static type checker for type safety
+- **Safety 3.0.0**: Dependency security vulnerability scanner
+- **pre-commit 3.6.0**: Git hook framework for automated quality checks
+  - Trailing whitespace removal
+  - YAML validation
+  - Large file detection
+  - Branch protection (dev/main)
+  - Docstring formatting
+  - Typo detection
 
 ## Architecture
 
@@ -119,122 +221,217 @@ GET /api/v1/conversations/debug/sessions
 
 ### Prerequisites
 
-- Python 3.11 or higher
-- pip package manager
-- Virtual environment (recommended)
+Ensure you have the following installed:
+- **Python 3.11 or 3.12** (3.12 recommended for latest features)
+- **pip** (latest version: `pip install --upgrade pip`)
+- **git** for cloning the repository
+- **Virtual environment** (venv or virtualenv)
+- **(Optional) Docker** for containerized deployment
 
-### Local Development
+### Local Development Setup
 
-1. **Clone the repository:**
+#### Option 1: Quick Setup (Recommended)
+
 ```bash
-git clone <repository-url>
-cd fastapi-chatbot
-```
+# Clone the repository
+git clone https://github.com/AlyonaCIA/FastAPI_Chatbot.git
+cd FastAPI_Chatbot
 
-2. **Create and activate virtual environment:**
-```bash
-python -m venv venv
-source venv/bin/activate  # Linux/macOS
-# or
-venv\Scripts\activate     # Windows
-```
-
-3. **Install dependencies:**
-```bash
-# Quick setup
+# One-command setup (installs everything)
 ./run_local.sh -i
 
-# Or manual installation
-pip install -r requirements.txt
-pip install -r requirements-dev.txt
-```
-
-4. **Run the application:**
-```bash
+# Verify installation
 python -m app.main
 ```
 
-The API will be available at `http://localhost:8080` with interactive documentation at `http://localhost:8080/docs`.
+#### Option 2: Manual Setup
+
+```bash
+# 1. Clone the repository
+git clone https://github.com/AlyonaCIA/FastAPI_Chatbot.git
+cd FastAPI_Chatbot
+
+# 2. Create virtual environment
+python3.11 -m venv venv
+
+# 3. Activate virtual environment
+source venv/bin/activate  # Linux/macOS
+# or
+venv\Scripts\activate  # Windows
+
+# 4. Upgrade pip
+pip install --upgrade pip
+
+# 5. Install production dependencies
+pip install -r requirements.txt
+
+# 6. Install development dependencies (for contributors)
+pip install -r requirements-dev.txt
+
+# 7. Install pre-commit hooks (optional but recommended)
+pre-commit install
+
+# 8. Verify installation
+python -m pytest tests/
+```
+
+### Environment Configuration
+
+Create a `.env` file for custom configuration (optional):
+
+```bash
+# .env
+DEBUG=false
+LOG_LEVEL=INFO
+HOST=0.0.0.0
+PORT=8080
+DEFAULT_LANGUAGE=en
+CONFIDENCE_THRESHOLD=0.3
+SESSION_TTL_HOURS=24
+MAX_SESSIONS=1000
+```
+
+### Running the Application
+
+```bash
+# Development mode (auto-reload enabled)
+python -m app.main
+
+# Or with uvicorn directly
+uvicorn app.main:app --reload --host 0.0.0.0 --port 8080
+
+# Production mode
+uvicorn app.main:app --host 0.0.0.0 --port 8080 --workers 4
+```
+
+Access the API:
+- **API Base**: http://localhost:8080
+- **Swagger Docs**: http://localhost:8080/docs
+- **ReDoc**: http://localhost:8080/redoc
 
 ### Docker Deployment
 
-```bash
-# Build and run with Docker
-docker build -t fastapi-chatbot .
-docker run -p 8080:8080 fastapi-chatbot
+For containerized deployment:
 
-# Or use docker-compose for development
-docker-compose up --build
+```bash
+# Build Docker image
+docker build -t fastapi-chatbot:latest .
+
+# Run container
+docker run -d \
+  --name fastapi-chatbot \
+  -p 8080:8080 \
+  -e DEBUG=false \
+  -e LOG_LEVEL=INFO \
+  fastapi-chatbot:latest
+
+# View logs
+docker logs -f fastapi-chatbot
+
+# Stop container
+docker stop fastapi-chatbot
+
+# Or use docker-compose
+docker-compose up -d --build
+
+# View docker-compose logs
+docker-compose logs -f
 ```
+
+**Docker Features:**
+- Production-ready multi-stage build
+- Minimal image size with alpine base
+- Non-root user for security
+- Health checks included
+- Structured logging to stdout
 
 ## Development
 
-### Development Workflow
+### Development Environment Setup
 
-The project includes a comprehensive development script that mirrors the CI pipeline:
+The project provides a comprehensive development script that mirrors the CI/CD pipeline:
 
 ```bash
-# Setup development environment
+# One-time setup - Install all dev dependencies and tools
 ./run_local.sh -i
 
-# Format code
+# Format code (black + isort)
 ./run_local.sh -f
 
-# Run linting
+# Run linting checks (flake8 + mypy)
 ./run_local.sh -l
 
-# Run tests
+# Run all tests with coverage
 ./run_local.sh -t
 
-# Run full CI pipeline locally
+# Run security scan
+./run_local.sh -s
+
+# Run complete CI pipeline locally (recommended before pushing)
 ./run_local.sh -n
+
+# Help and options
+./run_local.sh -h
 ```
 
-### Using Nox (Recommended)
+### Using Nox (Recommended Workflow)
 
-Nox provides isolated environments for different development tasks:
+Nox provides isolated virtual environments for each task, ensuring reproducibility:
 
 ```bash
-# List available sessions
+# List all available sessions
 nox -l
 
-# Format code
+# Format code automatically
 nox -s format
 
-# Run linting
+# Check formatting without modifying (CI mode)
+nox -s format -- --check
+
+# Run linting (flake8 + mypy)
 nox -s lint
 
-# Run tests
+# Run tests with coverage (single Python version)
 nox -s tests
 
-# Run security scan
+# Run tests across all Python versions (3.11, 3.12)
+nox -s tests --python 3.11 3.12
+
+# Run security vulnerability scan
 nox -s security
 
-# Clean artifacts
+# Clean all build artifacts and caches
 nox -s clean
 
-# Run CI pipeline
+# Run complete CI pipeline (format check + lint + tests + security)
 nox -s ci
 ```
 
-### Code Quality Tools
-
-The project enforces code quality through multiple tools:
-
-- **Black**: Code formatting (88 character line length)
-- **isort**: Import sorting with black compatibility
-- **flake8**: Code linting and style checking
-- **mypy**: Static type checking
-- **safety**: Security vulnerability scanning
-- **pytest**: Unit and integration testing
-
 ### Pre-commit Hooks
 
-Install pre-commit hooks to automatically check code quality:
+Install pre-commit hooks to automatically enforce code quality standards:
 
 ```bash
+# Install hooks (one-time setup)
 pre-commit install
+
+# Manually run hooks on all files
+pre-commit run --all-files
+
+# Update hook versions
+pre-commit autoupdate
 ```
+
+**Pre-commit checks include:**
+- Trailing whitespace removal
+- End-of-file fixer
+- YAML syntax validation
+- Large file detection (>500KB)
+- Branch protection (prevents commits to dev/main)
+- Docstring formatting (88 char wrap)
+- Import sorting (isort)
+- Code linting (flake8)
+- Typo detection
 
 ## Testing
 
@@ -294,29 +491,81 @@ SESSION_TTL_HOURS=24
 
 ## CI/CD Pipeline
 
-The GitHub Actions workflow includes:
+The project includes a comprehensive GitHub Actions workflow that ensures code quality and reliability.
 
-### Jobs
+### Pipeline Architecture
 
-1. **Code Quality**: Format checking, linting, and security scanning
-2. **Tests**: Matrix testing across Python 3.11 and 3.12
-3. **Nox Validation**: Mirrors local development environment
-4. **API Integration**: Real API endpoint testing
-5. **Build Verification**: Package building and validation
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    GitHub Actions Pipeline                   │
+├─────────────────────────────────────────────────────────────┤
+│                                                              │
+│  ┌──────────────┐  ┌──────────────┐  ┌─────────────────┐  │
+│  │ Code Quality │  │    Testing    │  │  Build & Deploy │  │
+│  ├──────────────┤  ├──────────────┤  ├─────────────────┤  │
+│  │ • Format ✓   │  │ • Python 3.11│  │ • Package Build │  │
+│  │ • Lint ✓     │  │ • Python 3.12│  │ • Docker Image  │  │
+│  │ • Type Check │  │ • Coverage   │  │ • Artifacts     │  │
+│  │ • Security   │  │ • JUnit XML  │  │ • Reports       │  │
+│  └──────────────┘  └──────────────┘  └─────────────────┘  │
+│                                                              │
+└─────────────────────────────────────────────────────────────┘
+```
 
-### Workflow Features
+### CI/CD Jobs
 
-- **Matrix Testing**: Multiple Python versions
-- **Caching**: Pip dependencies and nox environments
-- **Artifacts**: Test results, coverage reports, security scans
-- **Integration Testing**: Full API workflow validation
-- **Build Verification**: Package creation and installation
+#### 1. **Code Quality & Security**
+- **Black & isort**: Code formatting validation
+- **flake8**: PEP 8 compliance and linting
+- **mypy**: Static type checking
+- **Safety**: Dependency vulnerability scanning
+- **Exit on failure**: Pipeline stops if quality checks fail
 
-### Triggering CI
+#### 2. **Matrix Testing**
+- **Python Versions**: 3.11, 3.12
+- **Parallel Execution**: Tests run simultaneously
+- **Coverage Reports**: HTML, XML, and terminal output
+- **JUnit XML**: Test result artifacts for analysis
+- **Minimum Coverage**: 70% threshold enforced
 
-The pipeline runs on:
-- Push to `main`, `develop`, or `feature/*` branches
-- Pull requests to `main` or `develop`
+#### 3. **Nox Validation**
+- **Isolated Environments**: Replicates production conditions
+- **Full Pipeline**: format → lint → test → security
+- **Dependency Caching**: Faster builds with pip cache
+- **Artifact Upload**: Coverage reports and test results
+
+#### 4. **Integration Testing**
+- **API Workflow**: Real conversation flow testing
+- **Session Management**: UUID tracking validation
+- **Multi-language**: English and Norwegian responses
+- **Health Checks**: Endpoint availability verification
+
+#### 5. **Build Verification**
+- **Setup.py**: Package building and installation
+- **Dependency Resolution**: Requirements validation
+- **Import Testing**: Module accessibility checks
+
+### Trigger Conditions
+
+The pipeline runs automatically on:
+- **Push** to `main`, `develop`, or `feature/*` branches
+- **Pull Requests** targeting `main` or `develop`
+- **Manual Dispatch**: Workflow can be triggered manually
+
+### Caching Strategy
+
+Optimized build times through intelligent caching:
+- **Pip Dependencies**: Cached per Python version
+- **Nox Environments**: Cached per session
+- **Cache Key**: Based on requirements files hash
+
+### Artifacts & Reports
+
+Generated artifacts include:
+- **Test Results**: JUnit XML format
+- **Coverage Reports**: HTML and XML
+- **Security Scan**: JSON vulnerability report
+- **Retention**: 30 days for all artifacts
 
 ## NLP and Chatbot Logic
 
@@ -343,30 +592,148 @@ The chatbot uses structured JSON data (`kindly-bot.json`) with:
 
 ## Contributing
 
+We welcome contributions from the community! Please follow these guidelines to ensure a smooth collaboration.
+
 ### Development Guidelines
 
-1. **Follow clean architecture principles**
-2. **Write comprehensive tests for new features**
-3. **Maintain code coverage above 70%**
-4. **Use conventional commit messages**
-5. **Ensure all CI checks pass**
+1. **Follow Clean Architecture**: Maintain separation between domain, infrastructure, and API layers
+2. **Write Tests First**: TDD approach - write tests before implementing features
+3. **Maintain Coverage**: Keep code coverage above 70%
+4. **Type Everything**: Use type hints for all function parameters and return values
+5. **Document Code**: Add docstrings to all classes and public methods
+6. **Conventional Commits**: Use clear, descriptive commit messages
+7. **Run Quality Checks**: Ensure all CI checks pass before submitting PR
 
 ### Contribution Workflow
 
-1. Fork the repository
-2. Create a feature branch: `git checkout -b feature/your-feature-name`
-3. Make changes following coding standards
-4. Run local quality checks: `./run_local.sh -n`
-5. Commit changes with descriptive messages
-6. Push to your fork and submit a pull request
+```bash
+# 1. Fork the repository on GitHub
+# 2. Clone your fork
+git clone https://github.com/YOUR_USERNAME/FastAPI_Chatbot.git
+cd FastAPI_Chatbot
+
+# 3. Create a feature branch from main
+git checkout main
+git pull origin main
+git checkout -b feature##/your-feature-name
+
+# 4. Install development dependencies
+./run_local.sh -i
+
+# 5. Install pre-commit hooks
+pre-commit install
+
+# 6. Make your changes following TDD
+# - Write tests first (tests/)
+# - Implement feature
+# - Run tests: nox -s tests
+
+# 7. Run all quality checks locally
+nox -s ci
+# or
+./run_local.sh -n
+
+# 8. Commit with conventional commit message
+git add .
+git commit -m "feat: add new feature description"
+
+# 9. Push to your fork
+git push origin feature##/your-feature-name
+
+# 10. Open a Pull Request on GitHub
+# - Target branch: main
+# - Fill out PR template
+# - Wait for CI to pass
+# - Request review
+```
+
+### Branch Naming Convention
+
+Follow the repository's naming pattern:
+- `feature##/description` - New features (e.g., `feature04/add-dual-license`)
+- `bugfix##/description` - Bug fixes
+- `docs##/description` - Documentation updates
+- `refactor##/description` - Code refactoring
+
+### Commit Message Format
+
+Use conventional commits for clear history:
+```
+<type>(<scope>): <description>
+
+[optional body]
+
+[optional footer]
+```
+
+**Types:**
+- `feat`: New feature
+- `fix`: Bug fix
+- `docs`: Documentation changes
+- `style`: Code style changes (formatting, etc.)
+- `refactor`: Code refactoring
+- `test`: Adding or updating tests
+- `chore`: Maintenance tasks
+
+**Examples:**
+```bash
+feat(api): add conversation history endpoint
+fix(chatbot): resolve TF-IDF vectorization edge case
+docs(readme): update installation instructions
+test(domain): add session service unit tests
+```
 
 ### Code Standards
 
+#### Python Style
 - **Line Length**: 88 characters (Black default)
 - **Import Sorting**: isort with black profile
-- **Type Hints**: Required for all public functions
-- **Documentation**: Docstrings for all classes and public methods
-- **Testing**: Unit tests for business logic, integration tests for APIs
+- **Docstring Style**: Google-style docstrings
+- **Naming Conventions**:
+  - Classes: `PascalCase`
+  - Functions/Variables: `snake_case`
+  - Constants: `UPPER_SNAKE_CASE`
+  - Private members: `_leading_underscore`
+
+#### Type Hints
+```python
+from typing import List, Optional, Dict
+
+def process_message(
+    message: str,
+    session_id: str,
+    metadata: Optional[Dict[str, str]] = None
+) -> List[str]:
+    """Process incoming message."""
+    pass
+```
+
+#### Testing Requirements
+- Unit tests for all business logic
+- Integration tests for API endpoints
+- Minimum 70% code coverage
+- Test file naming: `test_*.py`
+- Test function naming: `test_<feature>_<scenario>()`
+
+### Pull Request Checklist
+
+Before submitting, ensure:
+- [ ] Code follows project style guide
+- [ ] All tests pass (`nox -s tests`)
+- [ ] Code coverage is maintained or improved
+- [ ] Type checking passes (`nox -s lint`)
+- [ ] Security scan passes (`nox -s security`)
+- [ ] Documentation is updated (if needed)
+- [ ] Commit messages follow conventional format
+- [ ] Branch is up to date with main
+- [ ] No conflicts with main branch
+
+### Getting Help
+
+- **Email**: alenacivanovaa@gmail.com
+- **Documentation**: Check `/docs` folder
+- **Bug Reports**: Open an issue with detailed description
+- **Feature Requests**: Open an issue with use case explanation
 
 ## Performance Considerations
 
@@ -385,31 +752,112 @@ The chatbot uses structured JSON data (`kindly-bot.json`) with:
 
 ## License
 
-This project is licensed under the MIT License. See LICENSE file for details.
+**Copyright © 2024-2026 Alyona Carolina Ivanova Araujo**
 
-## Author
+This project is available under a **dual licensing model** to support both open-source community and commercial use:
 
-**Alyona Carolina Ivanova Araujo**  
-Email: alenacivanovaa@gmail.com
+### Free License: AGPL-3.0
+
+The following users can use this software **FREE** under the GNU Affero General Public License v3.0:
+
+| User Type | Use Case | Cost |
+|-----------|----------|------|
+| **Individual Developers** | Personal projects, learning, portfolio | **FREE** |
+| **Educational Institutions** | Universities, schools, research, teaching | **FREE** |
+| **Students & Researchers** | Academic projects, thesis work | **FREE** |
+| **Non-Profit Organizations** | Charitable work, community projects | **FREE** |
+| **Open Source Projects** | AGPL-compatible projects, contributions | **FREE** |
+
+**Requirements:**
+- Source code modifications must be disclosed
+- Derivative works must use AGPL-3.0
+- Network use triggers copyleft (AGPL provision)
+- Attribution to original author required
+
+### Commercial License
+
+**For-profit companies** and commercial entities must obtain a commercial license:
+
+| User Type | When Required |
+|-----------|---------------|
+| **Companies** | Using software in any commercial capacity |
+| **For-Profit Orgs** | Revenue-generating products or services |
+| **SaaS Providers** | Hosting as a service for customers |
+| **Product Integration** | Embedding in proprietary software |
+
+**Benefits:**
+- No source code disclosure required
+- No copyleft obligations
+- Proprietary use allowed
+- Priority support & maintenance
+- Custom feature development available
+- Legal protection & indemnification
+
+**To obtain a commercial license:**
+- Email: alenacivanovaa@gmail.com
+- Subject: "FastAPI Chatbot - Commercial License Request"
+- Include: Company name, use case, number of developers
+
+### Licensing FAQ
+
+**Q: I'm a freelancer building a client project. Which license?**  
+A: If your client is a commercial entity, they need a commercial license. If you're doing non-profit work, AGPL-3.0 applies.
+
+**Q: Can I use this for my startup?**  
+A: If your startup is a registered business or generating revenue, you need a commercial license.
+
+**Q: What if I modify the code?**  
+A: Under AGPL-3.0, you must share modifications. Under commercial license, modifications are proprietary.
+
+**Q: University spin-off company?**  
+A: Company = Commercial license. University research project = AGPL-3.0.
+
+For complete legal terms, see the [LICENSE](LICENSE) file.
+
+**Questions?** Contact: alenacivanovaa@gmail.com
 
 ---
 
-## Quick Start
+## Author
 
-```bash
-# 1. Clone and setup
-git clone <repository-url>
-cd fastapi-chatbot
-./run_local.sh -i
+<div align="center">
 
-# 2. Run the application
-python -m app.main
+### Alyona Carolina Ivanova Araujo
 
-# 3. Test the API
-curl -X POST "http://localhost:8080/api/v1/conversations/start" \
-  -H "Content-Type: application/json" \
-  -d '{"language": "en"}'
+**Software Engineer | Python Developer | API Architect**
 
-# 4. View documentation
-open http://localhost:8080/docs
-```
+**Email:** alenacivanovaa@gmail.com  
+**GitHub:** [@AlyonaCIA](https://github.com/AlyonaCIA)  
+**Version:** 1.0.1
+
+---
+
+### Project Stats
+
+![Python Version](https://img.shields.io/badge/Python-3.11%20|%203.12-blue)
+![FastAPI](https://img.shields.io/badge/FastAPI-0.109.0-009688)
+![Code Coverage](https://img.shields.io/badge/Coverage-70%25+-success)
+![License](https://img.shields.io/badge/License-AGPL--3.0%20|%20Commercial-blue)
+
+</div>
+
+---
+
+## Acknowledgments
+
+This project was built with:
+- Modern Python best practices and tooling
+- Clean Architecture principles
+- Test-Driven Development methodology
+- Comprehensive CI/CD pipeline
+- Community-driven open source values
+
+---
+
+<div align="center">
+
+**If you find this project useful, please consider giving it a star!**
+
+Made with care by Alyona Carolina Ivanova Araujo
+
+</div>
