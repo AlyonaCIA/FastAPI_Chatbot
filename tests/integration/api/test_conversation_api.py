@@ -17,17 +17,20 @@ def chatbot():
 # ✅ TEST LOAD DATA
 # ---------------------- #
 
+
 def test_load_data_success(chatbot):
     """Test that the chatbot correctly loads data from the JSON file."""
     assert len(chatbot.questions) > 0, "No questions loaded"
     assert len(chatbot.answers) > 0, "No answers loaded"
     assert len(chatbot.questions) == len(
-        chatbot.answers), "Mismatch between questions and answers"
+        chatbot.answers
+    ), "Mismatch between questions and answers"
 
 
 # ---------------------- #
 # ✅ TEST MESSAGE PROCESSING
 # ---------------------- #
+
 
 @pytest.mark.parametrize(
     "user_message, expected_response",
@@ -78,6 +81,7 @@ def test_process_message_fallback(chatbot):
 # ✅ TEST GREETING HANDLING
 # ---------------------- #
 
+
 @pytest.mark.parametrize(
     "language, expected_greeting",
     [
@@ -106,6 +110,7 @@ def test_get_greeting(chatbot, language, expected_greeting):
 # ✅ TEST FALLBACK HANDLING
 # ---------------------- #
 
+
 def test_fallback_response(chatbot):
     """Test that the chatbot returns the correct fallback response."""
     response = chatbot._get_fallback_response()
@@ -123,6 +128,7 @@ def test_fallback_response(chatbot):
 # ---------------------- #
 # ✅ TEST ERROR HANDLING
 # ---------------------- #
+
 
 def test_process_message_error_handling(chatbot, caplog):
     """Test that the chatbot handles errors gracefully."""
@@ -154,7 +160,7 @@ def test_process_message_error_handling(chatbot, caplog):
     # "I'm sorry, I didn't understand that." as expected. We will accept both for now.
     expected_responses = [
         "I'm sorry, I didn't understand that.",
-        "Oops, I didn't understand that."
+        "Oops, I didn't understand that.",
     ]
 
     assert response in expected_responses, f"Unexpected error response: {response}"

@@ -1,4 +1,5 @@
 """Dependency injection setup for FastAPI."""
+
 # Third-party imports
 from fastapi import Depends
 
@@ -7,7 +8,6 @@ from app.domain.repositories.session import SessionRepositoryInterface
 from app.domain.services.chatbot import ChatbotService
 from app.domain.services.session import SessionService
 from app.infrastructure.repositories.memory.session import InMemorySessionRepository
-
 
 _session_repository_instance = None
 _chatbot_service_instance = None
@@ -30,7 +30,7 @@ def get_chatbot_service() -> ChatbotService:
 
 
 def get_session_service(
-    repo: SessionRepositoryInterface = Depends(get_session_repository)
+    repo: SessionRepositoryInterface = Depends(get_session_repository),
 ) -> SessionService:
     """Get session service with injected repository."""
     return SessionService(repo)

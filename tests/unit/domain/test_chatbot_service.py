@@ -5,8 +5,8 @@ import logging
 from typing import List
 
 import pytest
-
 from backend.config.data_loader import chatbot_data
+
 # ✅ Local Application Imports
 from backend.services.chatbot_service import ChatbotService
 
@@ -26,25 +26,47 @@ def chatbot() -> ChatbotService:
         #     "Hi there!",
         #     "Hello! How can I assist you today?"
         # ])),
-
-        ("Tell me a joke", chatbot_data.get("jokes", [{}])[0].get("replies", {}).get("en", [
-            "I'm sorry, I don't know any jokes.",
-            "What do you get if you clone a pirate? A pirate copy!"
-        ])),
-
-        ("random text", chatbot_data.get("fallbacks", [{}])[0].get("replies", {}).get("en", [
-            "I'm sorry, I didn't understand that.",
-            "Oops, I didn't understand that."
-        ])),
-
-        ("", chatbot_data.get("fallbacks", [{}])[0].get("replies", {}).get("en", [
-            "I'm sorry, I didn't understand that.",
-            "Oops, I didn't understand that."
-        ])),
+        (
+            "Tell me a joke",
+            chatbot_data.get("jokes", [{}])[0]
+            .get("replies", {})
+            .get(
+                "en",
+                [
+                    "I'm sorry, I don't know any jokes.",
+                    "What do you get if you clone a pirate? A pirate copy!",
+                ],
+            ),
+        ),
+        (
+            "random text",
+            chatbot_data.get("fallbacks", [{}])[0]
+            .get("replies", {})
+            .get(
+                "en",
+                [
+                    "I'm sorry, I didn't understand that.",
+                    "Oops, I didn't understand that.",
+                ],
+            ),
+        ),
+        (
+            "",
+            chatbot_data.get("fallbacks", [{}])[0]
+            .get("replies", {})
+            .get(
+                "en",
+                [
+                    "I'm sorry, I didn't understand that.",
+                    "Oops, I didn't understand that.",
+                ],
+            ),
+        ),
     ],
 )
-def test_process_message(chatbot: ChatbotService, user_message: str,
-                         expected_responses: List[str]) -> None:
+def test_process_message(
+    chatbot: ChatbotService, user_message: str, expected_responses: List[str]
+) -> None:
     """Ensure chatbot responds correctly to various user inputs."""
 
     response = chatbot.process_message(user_message)

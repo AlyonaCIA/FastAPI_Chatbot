@@ -9,30 +9,38 @@ repos:
       - id: check-added-large-files
       - id: check-yaml
       - id: end-of-file-fixer
+      - id: check-toml
+      - id: check-merge-conflict
+      - id: detect-private-key
 
-  - repo: https://github.com/PyCQA/docformatter
-    rev: v1.7.7
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.3.0
     hooks:
-      - id: docformatter
-        args: [--in-place, --wrap-summaries, "88", --wrap-descriptions, "88"]
+      - id: ruff
+        args: [--fix]
+      - id: ruff-format
 
-  - repo: https://github.com/pycqa/isort
-    rev: 6.0.1
+  - repo: https://github.com/psf/black
+    rev: 24.2.0
     hooks:
-      - id: isort
-        types: [python]
+      - id: black
+        language_version: python3.11
 
-  - repo: https://github.com/PyCQA/flake8
-    rev: 7.3.0
+  - repo: https://github.com/pycqa/bandit
+    rev: 1.7.8
     hooks:
-      - id: flake8
-        name: flake8
-        types: [python]
-        args:
-          - --max-line-length=88
-          - --ignore=E731,E266,W504,E712
+      - id: bandit
+        args: ["-c", "pyproject.toml"]
+        additional_dependencies: ["bandit[toml]"]
+
+  - repo: https://github.com/pre-commit/mirrors-mypy
+    rev: v1.9.0
+    hooks:
+      - id: mypy
+        additional_dependencies: [types-cachetools]
+        args: [--ignore-missing-imports]
 
   - repo: https://github.com/crate-ci/typos
-    rev: v1.34.0
+    rev: v1.19.0
     hooks:
       - id: typos
