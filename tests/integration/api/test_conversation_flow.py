@@ -2,10 +2,10 @@
 
 # ✅ Third-Party Imports
 import pytest
+from fastapi.testclient import TestClient
 
 # ✅ Local Application Imports
-from backend.main import app
-from fastapi.testclient import TestClient
+from app.main import app
 
 client = TestClient(app)
 
@@ -14,7 +14,7 @@ def test_full_conversation_flow():
     """Test a complete conversation from start to finish."""
 
     # 🔹 1. Start the conversation
-    start_response = client.post("/api/conversation/start", params={"language": "en"})
+    start_response = client.post("/api/v1/conversations/start", json={"language": "en"})
     assert (
         start_response.status_code == 200
     ), f"Failed to start conversation: {start_response.text}"
@@ -55,9 +55,9 @@ def test_full_conversation_flow():
     ]
 
     for user_message, expected_responses in messages:
-        request_data = {"user_id": session_id, "message": user_message}
+        request_data = {"message": user_message}
 
-        response = client.post("/api/conversation/message", json=request_data)
+        response = client.post(f"/api/v1/conversations/{session_id}/messages", json=request_data)
 
         # 🔹 Debugging: Print response in case of failure
         if response.status_code != 200:
@@ -68,7 +68,7 @@ def test_full_conversation_flow():
         # assert response.status_code == 200, f"Unexpected status {response.status_code}: {response.text}"
 
         if response.status_code != 200:
-            print("⚠️ Skipping this step due to 422 error (field validation issue)")
+            print("⚠️ Skipping this step due to error (field validation issue)")
             continue  # 🔹 Skipping assertion until input format is confirmed
 
         assert "message" in response.json(), "Response should contain 'message'"
@@ -80,8 +80,8 @@ def test_full_conversation_flow():
 
     # 🔹 4. Attempt to send a message after the session expires (simulated)
     expired_response = client.post(
-        "/api/conversation/message",
-        json={"user_id": "00000000-0000-0000-0000-000000000000", "message": "hello"},
+        "/api/v1/conversations/00000000-0000-0000-0000-000000000000/messages",
+        json={"message": "hello"},
     )
 
     # 🔹 Temporary fix: Commenting out assertion due to validation errors
