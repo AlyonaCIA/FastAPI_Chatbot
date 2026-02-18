@@ -136,46 +136,46 @@ The FastAPI Chatbot follows **Clean Architecture** principles with **Domain-Driv
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#e3f2fd','primaryTextColor':'#000','primaryBorderColor':'#1565c0','lineColor':'#424242','secondaryColor':'#f3e5f5','tertiaryColor':'#e8f5e9'}}}%%
 graph TB
-    subgraph External["<b>🌍 EXTERNAL WORLD</b>"]
-        Users["👥 <b>End Users</b><br/>Web Browsers<br/>Mobile Apps<br/>API Clients"]
-        CI["🔄 <b>CI/CD</b><br/>GitHub Actions<br/>Automated Testing<br/>Quality Checks"]
+    subgraph External["EXTERNAL WORLD"]
+        Users["End Users<br/>Web Browsers<br/>Mobile Apps<br/>API Clients"]
+        CI["CI/CD<br/>GitHub Actions<br/>Automated Testing<br/>Quality Checks"]
     end
 
-    subgraph FastAPI["<b>⚡ FASTAPI CHATBOT APPLICATION</b>"]
+    subgraph FastAPI["FASTAPI CHATBOT APPLICATION"]
         direction TB
         
-        subgraph API["<b>📡 API Layer</b>"]
-            Router["<b>REST Endpoints</b><br/>/conversations<br/>/health"]
-            Middleware["<b>Middleware</b><br/>CORS<br/>Error Handling<br/>Logging"]
-            Validation["<b>Pydantic</b><br/>Request Validation<br/>Response Serialization"]
+        subgraph API["API Layer"]
+            Router["REST Endpoints<br/>/conversations<br/>/health"]
+            Middleware["Middleware<br/>CORS<br/>Error Handling<br/>Logging"]
+            Validation["Pydantic<br/>Request Validation<br/>Response Serialization"]
         end
         
-        subgraph Services["<b>🎯 Business Services</b>"]
-            Chatbot["<b>ChatbotService</b><br/>NLP Processing<br/>Response Matching<br/>Greeting Generation"]
-            Session["<b>SessionService</b><br/>Session Management<br/>History Tracking<br/>Validation"]
+        subgraph Services["Business Services"]
+            Chatbot["ChatbotService<br/>NLP Processing<br/>Response Matching<br/>Greeting Generation"]
+            Session["SessionService<br/>Session Management<br/>History Tracking<br/>Validation"]
         end
         
-        subgraph Data["<b>💾 Data Layer</b>"]
-            Repository["<b>Repository</b><br/>Session Storage<br/>(In-Memory)"]
-            KnowledgeBase["<b>Knowledge Base</b><br/>Q&A Dialogues<br/>JSON Dataset"]
+        subgraph Data["Data Layer"]
+            Repository["Repository<br/>Session Storage<br/>In-Memory"]
+            KnowledgeBase["Knowledge Base<br/>Q&A Dialogues<br/>JSON Dataset"]
         end
     end
 
-    subgraph ML["<b>🤖 MACHINE LEARNING</b>"]
+    subgraph ML["MACHINE LEARNING"]
         direction TB
-        SKLearn["<b>scikit-learn</b><br/>TF-IDF Vectorizer<br/>Cosine Similarity<br/>Text Processing"]
+        SKLearn["scikit-learn<br/>TF-IDF Vectorizer<br/>Cosine Similarity<br/>Text Processing"]
     end
 
-    subgraph Tools["<b>🛠️ DEVELOPMENT TOOLS</b>"]
+    subgraph Tools["DEVELOPMENT TOOLS"]
         direction TB
-        UV["<b>uv</b><br/>Package Manager<br/>Virtual Environments"]
-        Ruff["<b>Ruff</b><br/>Linter & Formatter"]
-        Pytest["<b>pytest</b><br/>Testing Framework<br/>70%+ Coverage"]
+        UV["uv<br/>Package Manager<br/>Virtual Environments"]
+        Ruff["Ruff<br/>Linter & Formatter"]
+        Pytest["pytest<br/>Testing Framework<br/>70%+ Coverage"]
     end
 
     %% User interactions
-    Users -->|"HTTP Requests<br/>JSON"| Router
-    Router -->|"Responses<br/>JSON"| Users
+    Users -->|HTTP Requests, JSON| Router
+    Router -->|Responses, JSON| Users
     
     %% API Flow
     Router --> Middleware
@@ -189,11 +189,11 @@ graph TB
     Session --> Repository
     
     %% CI/CD
-    CI -.->|"Deploy"| FastAPI
-    CI -.->|"Test"| Tools
+    CI -.->|Deploy| FastAPI
+    CI -.->|Test| Tools
     
     %% Tool connections
-    Tools -.->|"Develop & Test"| FastAPI
+    Tools -.->|Develop & Test| FastAPI
     
     %% Styling
     classDef externalClass fill:#e3f2fd,stroke:#1565c0,stroke-width:3px,color:#000
@@ -216,71 +216,71 @@ graph TB
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'arial'}}}%%
 graph LR
-    subgraph Client["<b>🌐 CLIENT LAYER</b>"]
+    subgraph Client["CLIENT LAYER"]
         direction TB
-        CL1["<b>HTTP Client</b><br/><i>Browser/Postman/App</i>"]
-        CL2["<b>REST API</b><br/><i>JSON over HTTP</i>"]
+        CL1["HTTP Client<br/>Browser/Postman/App"]
+        CL2["REST API<br/>JSON over HTTP"]
     end
 
-    subgraph API["<b>📡 PRESENTATION LAYER</b><br/><i>FastAPI Framework</i>"]
+    subgraph API["PRESENTATION LAYER<br/>FastAPI Framework"]
         direction TB
-        API1["<b>FastAPI App</b><br/>• CORS Middleware<br/>• OpenAPI Docs<br/>• Error Handling"]
-        API2["<b>Routes</b><br/>• /conversations<br/>• /health<br/>• Versioned (v1)"]
-        API3["<b>Schemas</b><br/>• Request Validation<br/>• Response Models<br/>• Pydantic"]
-        API4["<b>Dependencies</b><br/>• Dependency Injection<br/>• Service Factories"]
+        API1["FastAPI App<br/>CORS Middleware<br/>OpenAPI Docs<br/>Error Handling"]
+        API2["Routes<br/>/conversations<br/>/health<br/>Versioned v1"]
+        API3["Schemas<br/>Request Validation<br/>Response Models<br/>Pydantic"]
+        API4["Dependencies<br/>Dependency Injection<br/>Service Factories"]
     end
 
-    subgraph Domain["<b>🎯 DOMAIN LAYER</b><br/><i>Business Logic (Pure Python)</i>"]
+    subgraph Domain["DOMAIN LAYER<br/>Business Logic - Pure Python"]
         direction TB
-        DOM1["<b>ChatbotService</b><br/>• NLP Processing<br/>• Response Matching<br/>• TF-IDF Analysis"]
-        DOM2["<b>SessionService</b><br/>• Session Management<br/>• Business Rules<br/>• Validation"]
-        DOM3["<b>Entities</b><br/>• Session Model<br/>• Domain Objects"]
-        DOM4["<b>Repository Interface</b><br/>• Abstract Contracts<br/>• No Implementation"]
+        DOM1["ChatbotService<br/>NLP Processing<br/>Response Matching<br/>TF-IDF Analysis"]
+        DOM2["SessionService<br/>Session Management<br/>Business Rules<br/>Validation"]
+        DOM3["Entities<br/>Session Model<br/>Domain Objects"]
+        DOM4["Repository Interface<br/>Abstract Contracts<br/>No Implementation"]
     end
 
-    subgraph Infra["<b>🏗️ INFRASTRUCTURE LAYER</b><br/><i>External Integrations</i>"]
+    subgraph Infra["INFRASTRUCTURE LAYER<br/>External Integrations"]
         direction TB
-        INF1["<b>Memory Repository</b><br/>• In-Memory Storage<br/>• Session Persistence"]
-        INF2["<b>Data Loaders</b><br/>• JSON Data Source<br/>• Q&A Knowledge Base"]
-        INF3["<b>NLP Engine</b><br/>• scikit-learn<br/>• TF-IDF Vectorizer<br/>• Cosine Similarity"]
+        INF1["Memory Repository<br/>In-Memory Storage<br/>Session Persistence"]
+        INF2["Data Loaders<br/>JSON Data Source<br/>Q&A Knowledge Base"]
+        INF3["NLP Engine<br/>scikit-learn<br/>TF-IDF Vectorizer<br/>Cosine Similarity"]
     end
 
-    subgraph Core["<b>⚙️ CORE (Cross-Cutting)</b>"]
+    subgraph Core["CORE - Cross-Cutting"]
         direction TB
-        CORE1["<b>Configuration</b><br/>• Environment Vars<br/>• Settings Management"]
-        CORE2["<b>Logging</b><br/>• Structured Logs<br/>• Log Levels"]
-        CORE3["<b>Exceptions</b><br/>• Custom Errors<br/>• Error Handling"]
+        CORE1["Configuration<br/>Environment Vars<br/>Settings Management"]
+        CORE2["Logging<br/>Structured Logs<br/>Log Levels"]
+        CORE3["Exceptions<br/>Custom Errors<br/>Error Handling"]
     end
 
     %% Client to API
-    CL1 -->|"HTTP Requests"| API1
-    CL2 -.->|"JSON Payload"| API2
+    CL1 -->|HTTP Requests| API1
+    CL2 -.->|JSON Payload| API2
 
     %% API to Domain
     API1 --> API2
     API2 --> API3
     API2 --> API4
-    API4 -->|"Inject Services"| DOM1
-    API4 -->|"Inject Services"| DOM2
+    API4 -->|Inject Services| DOM1
+    API4 -->|Inject Services| DOM2
 
     %% Domain Layer Internal
-    DOM1 -.->|"Uses"| DOM3
-    DOM2 -->|"Uses"| DOM3
-    DOM2 -->|"Depends on Interface"| DOM4
+    DOM1 -.->|Uses| DOM3
+    DOM2 -->|Uses| DOM3
+    DOM2 -->|Depends on Interface| DOM4
 
     %% Domain to Infrastructure
-    DOM1 -->|"Loads Data"| INF2
-    DOM1 -->|"NLP Processing"| INF3
-    DOM4 -.->|"Implemented by"| INF1
-    DOM2 -->|"Via Interface"| INF1
+    DOM1 -->|Loads Data| INF2
+    DOM1 -->|NLP Processing| INF3
+    DOM4 -.->|Implemented by| INF1
+    DOM2 -->|Via Interface| INF1
 
     %% Core connections
-    API1 -.->|"Uses"| CORE1
-    API1 -.->|"Uses"| CORE2
-    API2 -.->|"Uses"| CORE3
-    DOM1 -.->|"Logs"| CORE2
-    DOM2 -.->|"Logs"| CORE2
-    INF1 -.->|"Logs"| CORE2
+    API1 -.->|Uses| CORE1
+    API1 -.->|Uses| CORE2
+    API2 -.->|Uses| CORE3
+    DOM1 -.->|Logs| CORE2
+    DOM2 -.->|Logs| CORE2
+    INF1 -.->|Logs| CORE2
 
     %% Styling
     classDef clientStyle fill:#e3f2fd,stroke:#1565c0,stroke-width:3px,color:#000
@@ -311,26 +311,26 @@ How a message flows through the system:
 ```mermaid
 %%{init: {'theme':'base', 'themeVariables': {'fontSize':'14px'}}}%%
 flowchart TD
-    Start([👤 User sends message]) --> API[📡 <b>FastAPI Route</b><br/>/conversations/:id/messages]
+    Start([User sends message]) --> API[<b>FastAPI Route</b><br/>/conversations/:id/messages]
     
     API --> Validate{<b>Validate</b><br/>Session exists?}
-    Validate -->|No| Error1[❌ 404 Not Found]
-    Validate -->|Yes| SessionSvc[🎯 <b>SessionService</b><br/>Add to conversation history]
+    Validate -->|No| Error1[404 Not Found]
+    Validate -->|Yes| SessionSvc[<b>SessionService</b><br/>Add to conversation history]
     
-    SessionSvc --> ChatbotSvc[🤖 <b>ChatbotService</b><br/>Process message]
+    SessionSvc --> ChatbotSvc[<b>ChatbotService</b><br/>Process message]
     
-    ChatbotSvc --> Vectorize[📊 <b>TF-IDF Vectorization</b><br/>Convert text to vectors]
-    Vectorize --> Similarity[🎲 <b>Cosine Similarity</b><br/>Compare with training data]
+    ChatbotSvc --> Vectorize[<b>TF-IDF Vectorization</b><br/>Convert text to vectors]
+    Vectorize --> Similarity[<b>Cosine Similarity</b><br/>Compare with training data]
     
     Similarity --> Threshold{<b>Confidence</b><br/>> 0.3?}
-    Threshold -->|No| Fallback[💬 Fallback response<br/>"I don't understand"]
-    Threshold -->|Yes| Match[✅ Best match found]
+    Threshold -->|No| Fallback[Fallback response<br/>"I don't understand"]
+    Threshold -->|Yes| Match[Best match found]
     
-    Match --> SelectAnswer[🎯 <b>Select Answer</b><br/>Random from matched responses]
+    Match --> SelectAnswer[<b>Select Answer</b><br/>Random from matched responses]
     Fallback --> Store
-    SelectAnswer --> Store[💾 <b>Store in Session</b><br/>Update conversation history]
+    SelectAnswer --> Store[<b>Store in Session</b><br/>Update conversation history]
     
-    Store --> Response([📤 Return response to user])
+    Store --> Response([Return response to user])
     
     style Start fill:#e3f2fd,stroke:#1565c0,stroke-width:3px
     style API fill:#fff3e0,stroke:#e65100,stroke-width:2px
@@ -355,8 +355,8 @@ The chatbot uses scikit-learn for intelligent response matching:
 ```mermaid
 %%{init: {'theme':'base'}}%%
 graph LR
-    A["<b>User Input</b><br/>'How are you?'"] --> B["<b>Preprocessing</b><br/>• Lowercase<br/>• Strip whitespace"]
-    B --> C["<b>TF-IDF Vectorizer</b><br/>• n-grams (1,2)<br/>• Unicode normalization"]
+    A["<b>User Input</b><br/>'How are you?'"] --> B["<b>Preprocessing</b><br/>Lowercase<br/>Strip whitespace"]
+    B --> C["<b>TF-IDF Vectorizer</b><br/>n-grams (1,2)<br/>Unicode normalization"]
     C --> D["<b>Vector Space</b><br/>Document-term matrix"]
     
     E["<b>Training Data</b><br/>Q&A Knowledge Base"] --> F["<b>Vectorization</b><br/>Pre-computed vectors"]
