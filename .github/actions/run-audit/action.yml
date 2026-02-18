@@ -1,0 +1,15 @@
+name: 'FastAPI Chatbot - Security Scan'
+description: 'Security scanning with bandit for FastAPI Chatbot'
+
+runs:
+  using: composite
+  steps:
+    - name: Run bandit security scan
+      run: uv run bandit -r app/ -ll -f json -o bandit-report.json || true
+      shell: bash
+      continue-on-error: true
+    
+    - name: Display bandit results
+      run: uv run bandit -r app/ -ll
+      shell: bash
+      continue-on-error: true
