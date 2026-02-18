@@ -2,10 +2,10 @@
 
 # ✅ Third-Party Imports
 import pytest
-from fastapi.testclient import TestClient
 
 # ✅ Local Application Imports
 from backend.main import app
+from fastapi.testclient import TestClient
 
 client = TestClient(app)
 
@@ -15,13 +15,16 @@ def test_full_conversation_flow():
 
     # 🔹 1. Start the conversation
     start_response = client.post("/api/conversation/start", params={"language": "en"})
-    assert start_response.status_code == 200, f"Failed to start conversation: {start_response.text}"
+    assert (
+        start_response.status_code == 200
+    ), f"Failed to start conversation: {start_response.text}"
 
     session_data = start_response.json()
     session_id = session_data.get("session_id")  # 🔹 Use `.get()` to avoid KeyError
 
-    assert isinstance(
-        session_id, str) and session_id, f"Invalid session_id: {session_id}"
+    assert (
+        isinstance(session_id, str) and session_id
+    ), f"Invalid session_id: {session_id}"
 
     # 🔹 2. Verify welcome message
     welcome_message = session_data.get("message", "")
@@ -32,19 +35,27 @@ def test_full_conversation_flow():
 
     # 🔹 3. Send messages and verify responses
     messages = [
-        ("hello", ["Hello! I am a chatbot!", "Hi there!",
-         "Hello! How can I assist you today?"]),
-        ("Tell me a joke", ["I'm sorry, I don't know any jokes.",
-         "What do you get if you clone a pirate? A pirate copy!"]),
+        (
+            "hello",
+            [
+                "Hello! I am a chatbot!",
+                "Hi there!",
+                "Hello! How can I assist you today?",
+            ],
+        ),
+        (
+            "Tell me a joke",
+            [
+                "I'm sorry, I don't know any jokes.",
+                "What do you get if you clone a pirate? A pirate copy!",
+            ],
+        ),
         ("How are you?", ["I'm sorry, I didn't understand that."]),
         ("Goodbye", ["I'm sorry, I didn't understand that."]),
     ]
 
     for user_message, expected_responses in messages:
-        request_data = {
-            "user_id": session_id,
-            "message": user_message
-        }
+        request_data = {"user_id": session_id, "message": user_message}
 
         response = client.post("/api/conversation/message", json=request_data)
 
@@ -63,7 +74,9 @@ def test_full_conversation_flow():
         assert "message" in response.json(), "Response should contain 'message'"
 
         bot_response = response.json()["message"]
-        assert bot_response in expected_responses, f"Unexpected response: {bot_response}"
+        assert (
+            bot_response in expected_responses
+        ), f"Unexpected response: {bot_response}"
 
     # 🔹 4. Attempt to send a message after the session expires (simulated)
     expired_response = client.post(
