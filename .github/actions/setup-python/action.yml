@@ -1,0 +1,42 @@
+name: 'FastAPI Chatbot - Setup Python'
+description: 'Setup Python environment with uv for FastAPI Chatbot'
+
+inputs:
+  python-version:
+    required: false
+    default: '3.11'
+    description: 'Python version (3.11, 3.12)'
+
+runs:
+  using: composite
+  steps:
+    - name: Setup Python ${{ inputs.python-version }}
+      uses: actions/setup-python@v5.0.0
+      with:
+        python-version: "${{ inputs.python-version }}"
+    
+    - name: Install uv
+      run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      shell: bash
+    
+    - name: Add uv to PATH
+      run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+      shell: bash
+    
+    - name: Verify uv installation
+      run: source $HOME/.cargo/env && uv --version
+      shell: bash
+    
+    - name: Cache uv packages
+      uses: actions/cache@v4
+      with:
+        path: |
+          ~/.cache/uv
+          .venv
+        key: uv-${{ runner.os }}-py${{ inputs.python-version }}-${{ hashFiles('uv.lock') }}
+        restore-keys: |
+          uv-${{ runner.os }}-py${{ inputs.python-version }}-
+    
+    - name: Sync project dependencies with uv
+      run: source $HOME/.cargo/env && uv sync --all-extras
+      shell: bash
