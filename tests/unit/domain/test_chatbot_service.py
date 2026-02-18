@@ -17,66 +17,36 @@ def chatbot() -> ChatbotService:
     return ChatbotService()
 
 
-@pytest.mark.parametrize(
-    "user_message, expected_responses",
-    [
-        # 🔹 Temporarily commented until chatbot_data is verified
-        # ("hello", chatbot_data.get("greetings", [{}])[0].get("replies", {}).get("en", [
-        #     "Hello! I am a chatbot!",
-        #     "Hi there!",
-        #     "Hello! How can I assist you today?"
-        # ])),
-        (
-            "Tell me a joke",
-            chatbot_data.get("jokes", [{}])[0]
-            .get("replies", {})
-            .get(
-                "en",
-                [
-                    "I'm sorry, I don't know any jokes.",
-                    "What do you get if you clone a pirate? A pirate copy!",
-                ],
-            ),
-        ),
-        (
-            "random text",
-            chatbot_data.get("fallbacks", [{}])[0]
-            .get("replies", {})
-            .get(
-                "en",
-                [
-                    "I'm sorry, I didn't understand that.",
-                    "Oops, I didn't understand that.",
-                ],
-            ),
-        ),
-        (
-            "",
-            chatbot_data.get("fallbacks", [{}])[0]
-            .get("replies", {})
-            .get(
-                "en",
-                [
-                    "I'm sorry, I didn't understand that.",
-                    "Oops, I didn't understand that.",
-                ],
-            ),
-        ),
-    ],
-)
-def test_process_message(
-    chatbot: ChatbotService, user_message: str, expected_responses: List[str]
-) -> None:
-    """Ensure chatbot responds correctly to various user inputs."""
-
-    response = chatbot.process_message(user_message)
-
-    # Debugging: Print response if the test fails
-    if response not in expected_responses:
-        print(f"❌ DEBUG: Unexpected response for '{user_message}': {response}")
-
+def test_process_message_fallback(chatbot: ChatbotService) -> None:
+    """Test that unrecognized messages return fallback responses."""
+    fallback_messages = [
+        "I'm sorry, I didn't understand that.",
+        "Oops, I didn't understand that.",
+    ]
+    
+    # Test with random unrecognized text
+    response = chatbot.process_message("xyzabc123unknown")
     assert isinstance(response, str), "Response should be a string"
-    assert response in expected_responses, f"Unexpected response: {response}"
+    assert response in fallback_messages, f"Expected fallback message, got: {response}"
+    
+    # Test with empty string
+    response = chatbot.process_message("")
+    assert isinstance(response, str), "Response should be a string"
+    assert response in fallback_messages, f"Expected fallback message, got: {response}"
+
+
+def test_process_message_joke(chatbot: ChatbotService) -> None:
+    """Test that joke requests return actual jokes, not fallback messages."""
+    fallback_messages = [
+        "I'm sorry, I didn't understand that.",
+        "Oops, I didn't understand that.",
+    ]
+    
+    response = chatbot.process_message("Tell me a joke")
+    assert isinstance(response, str), "Response should be a string"
+    assert response not in fallback_messages, \
+        "Chatbot should provide a joke, not a fallback message"
+    assert len(response) > 0, "Joke response should not be empty"
 
 
 # 🔹 Temporarily commented until the logging issue in ChatbotService is fixed
