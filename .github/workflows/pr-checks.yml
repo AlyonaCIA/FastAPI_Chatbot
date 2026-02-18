@@ -1,0 +1,80 @@
+name: 'Chatbot API - Pull Request Validation'
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  format:
+    name: Code Style Validation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python Environment
+        uses: ./.github/actions/setup-python
+        with:
+          python-version: '3.11'
+      
+      - name: Validate Code Formatting
+        uses: ./.github/actions/run-format
+
+  lint:
+    name: Code Quality Analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python Environment
+        uses: ./.github/actions/setup-python
+        with:
+          python-version: '3.11'
+      
+      - name: Analyze Code Quality
+        uses: ./.github/actions/run-lint
+
+  audit:
+    name: Security Scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python Environment
+        uses: ./.github/actions/setup-python
+        with:
+          python-version: '3.11'
+      
+      - name: Scan for Vulnerabilities
+        uses: ./.github/actions/run-audit
+
+  test:
+    name: Chatbot API Tests (Py${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Setup Python ${{ matrix.python-version }}
+        uses: ./.github/actions/setup-python
+        with:
+          python-version: ${{ matrix.python-version }}
+      
+      - name: Test Chatbot Functionality
+        uses: ./.github/actions/run-tests
+        with:
+          python-version: ${{ matrix.python-version }}
+
+  report:
+    name: Publish CI Reports
+    runs-on: ubuntu-latest
+    if: always()
+    needs: [format, lint, audit, test]
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Archive Test Results
+        uses: ./.github/actions/upload-reports

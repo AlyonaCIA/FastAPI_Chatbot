@@ -1,4 +1,4 @@
-"""Unit tests for SessionManager."""
+"""Unit tests for InMemorySessionRepository."""
 
 # ✅ Standard Library Imports
 from datetime import datetime
@@ -8,13 +8,13 @@ from uuid import UUID
 import pytest
 
 # ✅ Local Application Imports
-from backend.utils.session_manager import SessionManager
+from app.infrastructure.repositories.memory.session import InMemorySessionRepository
 
 
 @pytest.fixture
 def session_manager():
-    """Fixture to initialize a new SessionManager instance."""
-    return SessionManager()
+    """Fixture to initialize a new InMemorySessionRepository instance."""
+    return InMemorySessionRepository()
 
 
 # ---------------------- #

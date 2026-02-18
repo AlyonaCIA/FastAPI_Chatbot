@@ -4,7 +4,7 @@
 import pytest
 
 # ✅ Local Application Imports
-from backend.services.chatbot_service import ChatbotService
+from app.domain.services.chatbot import ChatbotService
 
 
 @pytest.fixture

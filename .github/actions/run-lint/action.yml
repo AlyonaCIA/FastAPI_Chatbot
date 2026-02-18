@@ -1,0 +1,15 @@
+name: 'FastAPI Chatbot - Linting'
+description: 'Quality checks with ruff for FastAPI Chatbot'
+
+runs:
+  using: composite
+  steps:
+    - name: Run ruff linting
+      run: uv run ruff check app/ tests/
+      shell: bash
+      continue-on-error: true
+    
+    - name: Run mypy type checking
+      run: uv run mypy app/
+      shell: bash
+      continue-on-error: true
