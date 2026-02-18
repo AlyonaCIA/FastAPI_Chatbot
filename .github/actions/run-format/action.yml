@@ -1,0 +1,15 @@
+name: 'FastAPI Chatbot - Format Check'
+description: 'Check code style with black and ruff for FastAPI Chatbot'
+
+runs:
+  using: composite
+  steps:
+    - name: Check import sorting with ruff
+      run: uv run ruff check --select I --diff app/ tests/
+      shell: bash
+      continue-on-error: true
+    
+    - name: Check code format with black
+      run: uv run black --check app/ tests/
+      shell: bash
+      continue-on-error: true
