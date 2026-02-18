@@ -129,6 +129,13 @@ dmypy.json
 # Cython debug symbols
 cython_debug/
 
+# Ruff
+.ruff_cache/
+
+# uv
+.uv/
+# uv.lock is tracked for reproducibility
+
 # Ignore VS Code files
 .vscode/
 .sandbox/
