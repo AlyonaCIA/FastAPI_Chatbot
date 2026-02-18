@@ -22,7 +22,7 @@ This project implements a RESTful chatbot service following **Clean Architecture
 - **Clean Architecture**: Proper separation of concerns with domain-driven design
 - **Test-Driven Development**: Comprehensive unit and integration tests with 70%+ coverage
 - **CI/CD Ready**: Full GitHub Actions pipeline with matrix testing
-- **Modern Tooling**: Nox, pre-commit hooks, black, isort, flake8, mypy, safety
+- **Modern Tooling**: uv, Ruff, Black, mypy, Bandit, pre-commit hooks
 - **Production Ready**: Docker support, structured logging, environment-based configuration
 - **Multilingual**: English and Norwegian support out of the box
 - **Type Safe**: Full type hints with mypy static type checking
@@ -46,10 +46,10 @@ This project implements a RESTful chatbot service following **Clean Architecture
 ### Development Excellence
 - **Comprehensive Testing**: Unit tests, integration tests, and API endpoint tests
 - **Code Coverage**: 70%+ coverage with HTML and XML reports
-- **Code Formatting**: Black (88 chars) + isort with pre-commit hooks
-- **Static Analysis**: flake8 linting + mypy type checking
-- **Security Scanning**: Automated dependency vulnerability checks with Safety
-- **Nox Automation**: Isolated test environments matching CI/CD pipeline
+- **Code Formatting**: Black (88 chars) + Ruff import sorting
+- **Static Analysis**: Ruff linting + mypy type checking
+- **Security Scanning**: Bandit for code security analysis
+- **Makefile Automation**: Streamlined development workflow commands
 - **Pre-commit Hooks**: Automated quality checks before every commit
 
 ### DevOps & Deployment
@@ -69,18 +69,21 @@ Get up and running in minutes:
 git clone https://github.com/AlyonaCIA/FastAPI_Chatbot.git
 cd FastAPI_Chatbot
 
-# 2. Setup development environment (recommended)
-./run_local.sh -i
+# 2. Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# 3. Run the application
-python -m app.main
+# 3. Setup development environment (recommended)
+make install-dev
 
-# 4. Test the API
+# 4. Run the application
+make run
+
+# 5. Test the API
 curl -X POST "http://localhost:8080/api/v1/conversations/start" \
   -H "Content-Type: application/json" \
   -d '{"language": "en"}'
 
-# 5. View interactive documentation
+# 6. View interactive documentation
 open http://localhost:8080/docs
 ```
 
@@ -102,27 +105,288 @@ The API will be available at `http://localhost:8080` with:
 - **cachetools 6.1.0**: Response caching for performance optimization
 
 ### Development & Quality Tools
-- **Nox 2023.4.22**: Automated testing in isolated environments
+- **uv**: Ultra-fast Python package installer and resolver (replacing pip)
 - **pytest 8.0.0**: Modern Python testing framework with plugins
   - pytest-cov: Code coverage measurement
   - pytest-mock: Mock object integration
   - pytest-asyncio: Async test support
 - **Black 24.1.0**: Uncompromising code formatter (88 char line length)
-- **isort 5.13.0**: Import statement organizer with black compatibility
-- **flake8 7.0.0**: Style guide enforcement (PEP 8)
+- **Ruff 0.3.0**: Extremely fast Python linter (replaces flake8, isort, and more)
 - **mypy 1.8.0**: Static type checker for type safety
-- **Safety 3.0.0**: Dependency security vulnerability scanner
+- **Bandit 1.7.0**: Security-focused static analyzer
 - **pre-commit 3.6.0**: Git hook framework for automated quality checks
   - Trailing whitespace removal
-  - YAML validation
+  - YAML/TOML validation
   - Large file detection
   - Branch protection (dev/main)
-  - Docstring formatting
+  - Security checks
   - Typo detection
+
+### Build & Deployment Tools
+- **Makefile**: Comprehensive task automation
+- **Hatchling**: Modern Python build backend
+- **Docker**: Containerization for consistent deployments
 
 ## Architecture
 
-The project follows clean architecture principles with clear separation of concerns:
+The FastAPI Chatbot follows **Clean Architecture** principles with **Domain-Driven Design (DDD)**, ensuring clear separation of concerns, high testability, and maintainability. The architecture is organized into concentric layers where dependencies flow inward toward the domain.
+
+### High-Level System Overview
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'primaryColor':'#e3f2fd','primaryTextColor':'#000','primaryBorderColor':'#1565c0','lineColor':'#424242','secondaryColor':'#f3e5f5','tertiaryColor':'#e8f5e9'}}}%%
+graph TB
+    subgraph External["<b>🌍 EXTERNAL WORLD</b>"]
+        Users["👥 <b>End Users</b><br/>Web Browsers<br/>Mobile Apps<br/>API Clients"]
+        CI["🔄 <b>CI/CD</b><br/>GitHub Actions<br/>Automated Testing<br/>Quality Checks"]
+    end
+
+    subgraph FastAPI["<b>⚡ FASTAPI CHATBOT APPLICATION</b>"]
+        direction TB
+        
+        subgraph API["<b>📡 API Layer</b>"]
+            Router["<b>REST Endpoints</b><br/>/conversations<br/>/health"]
+            Middleware["<b>Middleware</b><br/>CORS<br/>Error Handling<br/>Logging"]
+            Validation["<b>Pydantic</b><br/>Request Validation<br/>Response Serialization"]
+        end
+        
+        subgraph Services["<b>🎯 Business Services</b>"]
+            Chatbot["<b>ChatbotService</b><br/>NLP Processing<br/>Response Matching<br/>Greeting Generation"]
+            Session["<b>SessionService</b><br/>Session Management<br/>History Tracking<br/>Validation"]
+        end
+        
+        subgraph Data["<b>💾 Data Layer</b>"]
+            Repository["<b>Repository</b><br/>Session Storage<br/>(In-Memory)"]
+            KnowledgeBase["<b>Knowledge Base</b><br/>Q&A Dialogues<br/>JSON Dataset"]
+        end
+    end
+
+    subgraph ML["<b>🤖 MACHINE LEARNING</b>"]
+        direction TB
+        SKLearn["<b>scikit-learn</b><br/>TF-IDF Vectorizer<br/>Cosine Similarity<br/>Text Processing"]
+    end
+
+    subgraph Tools["<b>🛠️ DEVELOPMENT TOOLS</b>"]
+        direction TB
+        UV["<b>uv</b><br/>Package Manager<br/>Virtual Environments"]
+        Ruff["<b>Ruff</b><br/>Linter & Formatter"]
+        Pytest["<b>pytest</b><br/>Testing Framework<br/>70%+ Coverage"]
+    end
+
+    %% User interactions
+    Users -->|"HTTP Requests<br/>JSON"| Router
+    Router -->|"Responses<br/>JSON"| Users
+    
+    %% API Flow
+    Router --> Middleware
+    Middleware --> Validation
+    Validation --> Chatbot
+    Validation --> Session
+    
+    %% Service to Data
+    Chatbot --> KnowledgeBase
+    Chatbot --> SKLearn
+    Session --> Repository
+    
+    %% CI/CD
+    CI -.->|"Deploy"| FastAPI
+    CI -.->|"Test"| Tools
+    
+    %% Tool connections
+    Tools -.->|"Develop & Test"| FastAPI
+    
+    %% Styling
+    classDef externalClass fill:#e3f2fd,stroke:#1565c0,stroke-width:3px,color:#000
+    classDef apiClass fill:#fff3e0,stroke:#e65100,stroke-width:2px,color:#000
+    classDef serviceClass fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px,color:#000
+    classDef dataClass fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px,color:#000
+    classDef mlClass fill:#ffebee,stroke:#c62828,stroke-width:2px,color:#000
+    classDef toolClass fill:#fff9c4,stroke:#f57f17,stroke-width:2px,color:#000
+    
+    class Users,CI externalClass
+    class Router,Middleware,Validation apiClass
+    class Chatbot,Session serviceClass
+    class Repository,KnowledgeBase dataClass
+    class SKLearn mlClass
+    class UV,Ruff,Pytest toolClass
+```
+
+### System Architecture
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': { 'fontSize':'16px', 'fontFamily':'arial'}}}%%
+graph LR
+    subgraph Client["<b>🌐 CLIENT LAYER</b>"]
+        direction TB
+        CL1["<b>HTTP Client</b><br/><i>Browser/Postman/App</i>"]
+        CL2["<b>REST API</b><br/><i>JSON over HTTP</i>"]
+    end
+
+    subgraph API["<b>📡 PRESENTATION LAYER</b><br/><i>FastAPI Framework</i>"]
+        direction TB
+        API1["<b>FastAPI App</b><br/>• CORS Middleware<br/>• OpenAPI Docs<br/>• Error Handling"]
+        API2["<b>Routes</b><br/>• /conversations<br/>• /health<br/>• Versioned (v1)"]
+        API3["<b>Schemas</b><br/>• Request Validation<br/>• Response Models<br/>• Pydantic"]
+        API4["<b>Dependencies</b><br/>• Dependency Injection<br/>• Service Factories"]
+    end
+
+    subgraph Domain["<b>🎯 DOMAIN LAYER</b><br/><i>Business Logic (Pure Python)</i>"]
+        direction TB
+        DOM1["<b>ChatbotService</b><br/>• NLP Processing<br/>• Response Matching<br/>• TF-IDF Analysis"]
+        DOM2["<b>SessionService</b><br/>• Session Management<br/>• Business Rules<br/>• Validation"]
+        DOM3["<b>Entities</b><br/>• Session Model<br/>• Domain Objects"]
+        DOM4["<b>Repository Interface</b><br/>• Abstract Contracts<br/>• No Implementation"]
+    end
+
+    subgraph Infra["<b>🏗️ INFRASTRUCTURE LAYER</b><br/><i>External Integrations</i>"]
+        direction TB
+        INF1["<b>Memory Repository</b><br/>• In-Memory Storage<br/>• Session Persistence"]
+        INF2["<b>Data Loaders</b><br/>• JSON Data Source<br/>• Q&A Knowledge Base"]
+        INF3["<b>NLP Engine</b><br/>• scikit-learn<br/>• TF-IDF Vectorizer<br/>• Cosine Similarity"]
+    end
+
+    subgraph Core["<b>⚙️ CORE (Cross-Cutting)</b>"]
+        direction TB
+        CORE1["<b>Configuration</b><br/>• Environment Vars<br/>• Settings Management"]
+        CORE2["<b>Logging</b><br/>• Structured Logs<br/>• Log Levels"]
+        CORE3["<b>Exceptions</b><br/>• Custom Errors<br/>• Error Handling"]
+    end
+
+    %% Client to API
+    CL1 -->|"HTTP Requests"| API1
+    CL2 -.->|"JSON Payload"| API2
+
+    %% API to Domain
+    API1 --> API2
+    API2 --> API3
+    API2 --> API4
+    API4 -->|"Inject Services"| DOM1
+    API4 -->|"Inject Services"| DOM2
+
+    %% Domain Layer Internal
+    DOM1 -.->|"Uses"| DOM3
+    DOM2 -->|"Uses"| DOM3
+    DOM2 -->|"Depends on Interface"| DOM4
+
+    %% Domain to Infrastructure
+    DOM1 -->|"Loads Data"| INF2
+    DOM1 -->|"NLP Processing"| INF3
+    DOM4 -.->|"Implemented by"| INF1
+    DOM2 -->|"Via Interface"| INF1
+
+    %% Core connections
+    API1 -.->|"Uses"| CORE1
+    API1 -.->|"Uses"| CORE2
+    API2 -.->|"Uses"| CORE3
+    DOM1 -.->|"Logs"| CORE2
+    DOM2 -.->|"Logs"| CORE2
+    INF1 -.->|"Logs"| CORE2
+
+    %% Styling
+    classDef clientStyle fill:#e3f2fd,stroke:#1565c0,stroke-width:3px,color:#000
+    classDef apiStyle fill:#fff3e0,stroke:#e65100,stroke-width:3px,color:#000
+    classDef domainStyle fill:#f3e5f5,stroke:#6a1b9a,stroke-width:3px,color:#000
+    classDef infraStyle fill:#e8f5e9,stroke:#2e7d32,stroke-width:3px,color:#000
+    classDef coreStyle fill:#fce4ec,stroke:#c2185b,stroke-width:3px,color:#000
+
+    class CL1,CL2 clientStyle
+    class API1,API2,API3,API4 apiStyle
+    class DOM1,DOM2,DOM3,DOM4 domainStyle
+    class INF1,INF2,INF3 infraStyle
+    class CORE1,CORE2,CORE3 coreStyle
+```
+
+### Key Architectural Principles
+
+1. **Dependency Rule**: Dependencies point inward. Domain layer has no dependencies on outer layers
+2. **Interface Segregation**: Domain defines interfaces, Infrastructure implements them
+3. **Single Responsibility**: Each layer has a specific purpose and responsibility
+4. **Testability**: Pure domain logic can be tested without external dependencies
+5. **Flexibility**: Infrastructure can be swapped (e.g., Memory → Database) without changing domain
+
+### Conversation Flow Diagram
+
+How a message flows through the system:
+
+```mermaid
+%%{init: {'theme':'base', 'themeVariables': {'fontSize':'14px'}}}%%
+flowchart TD
+    Start([👤 User sends message]) --> API[📡 <b>FastAPI Route</b><br/>/conversations/:id/messages]
+    
+    API --> Validate{<b>Validate</b><br/>Session exists?}
+    Validate -->|No| Error1[❌ 404 Not Found]
+    Validate -->|Yes| SessionSvc[🎯 <b>SessionService</b><br/>Add to conversation history]
+    
+    SessionSvc --> ChatbotSvc[🤖 <b>ChatbotService</b><br/>Process message]
+    
+    ChatbotSvc --> Vectorize[📊 <b>TF-IDF Vectorization</b><br/>Convert text to vectors]
+    Vectorize --> Similarity[🎲 <b>Cosine Similarity</b><br/>Compare with training data]
+    
+    Similarity --> Threshold{<b>Confidence</b><br/>> 0.3?}
+    Threshold -->|No| Fallback[💬 Fallback response<br/>"I don't understand"]
+    Threshold -->|Yes| Match[✅ Best match found]
+    
+    Match --> SelectAnswer[🎯 <b>Select Answer</b><br/>Random from matched responses]
+    Fallback --> Store
+    SelectAnswer --> Store[💾 <b>Store in Session</b><br/>Update conversation history]
+    
+    Store --> Response([📤 Return response to user])
+    
+    style Start fill:#e3f2fd,stroke:#1565c0,stroke-width:3px
+    style API fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    style SessionSvc fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px
+    style ChatbotSvc fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px
+    style Vectorize fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style Similarity fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style Store fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style Response fill:#e3f2fd,stroke:#1565c0,stroke-width:3px
+    style Error1 fill:#ffebee,stroke:#c62828,stroke-width:2px
+    style Fallback fill:#fff9c4,stroke:#f57f17,stroke-width:2px
+    style SelectAnswer fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style Validate fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style Threshold fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style Match fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+```
+
+### NLP Processing Pipeline
+
+The chatbot uses scikit-learn for intelligent response matching:
+
+```mermaid
+%%{init: {'theme':'base'}}%%
+graph LR
+    A["<b>User Input</b><br/>'How are you?'"] --> B["<b>Preprocessing</b><br/>• Lowercase<br/>• Strip whitespace"]
+    B --> C["<b>TF-IDF Vectorizer</b><br/>• n-grams (1,2)<br/>• Unicode normalization"]
+    C --> D["<b>Vector Space</b><br/>Document-term matrix"]
+    
+    E["<b>Training Data</b><br/>Q&A Knowledge Base"] --> F["<b>Vectorization</b><br/>Pre-computed vectors"]
+    F --> D
+    
+    D --> G["<b>Cosine Similarity</b><br/>Calculate similarity scores"]
+    G --> H{"<b>Threshold</b><br/>Score > 0.3?"}
+    
+    H -->|Yes| I["<b>Best Match</b><br/>Highest score answer"]
+    H -->|No| J["<b>Fallback</b><br/>Default response"]
+    
+    I --> K["<b>Response</b><br/>Return to user"]
+    J --> K
+    
+    style A fill:#e3f2fd,stroke:#1565c0,stroke-width:3px
+    style B fill:#fff3e0,stroke:#e65100,stroke-width:2px
+    style C fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px
+    style D fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style E fill:#fce4ec,stroke:#c2185b,stroke-width:2px
+    style F fill:#f3e5f5,stroke:#6a1b9a,stroke-width:2px
+    style G fill:#e8f5e9,stroke:#2e7d32,stroke-width:2px
+    style H fill:#fff3e0,stroke:#f57c00,stroke-width:2px
+    style I fill:#c8e6c9,stroke:#388e3c,stroke-width:2px
+    style J fill:#ffecb3,stroke:#f57f17,stroke-width:2px
+    style K fill:#e3f2fd,stroke:#1565c0,stroke-width:3px
+```
+
+### Project Structure
+
+Detailed view of the project organization:
 
 ```
 app/
@@ -159,13 +423,86 @@ app/
             └── session.py      # In-memory session repository
 ```
 
-### Design Patterns
+### Design Patterns & Architectural Principles
 
-- **Repository Pattern**: Abstracts data access with interfaces and implementations
-- **Dependency Injection**: Loose coupling through FastAPI's dependency system
-- **Service Layer**: Encapsulates business logic separate from HTTP concerns
-- **Factory Pattern**: Centralized object creation in dependencies
-- **Clean Architecture**: Domain-centric design with dependency inversion
+#### 1. Clean Architecture (Hexagonal Architecture)
+The project follows the **Dependency Rule**: dependencies point inward toward the domain layer.
+
+- **Domain Layer** (Core): Contains business logic, entities, and interfaces - has no external dependencies
+- **Application Layer** (API): Orchestrates use cases and handles HTTP concerns
+- **Infrastructure Layer**: Implements interfaces defined by the domain (repositories, data loaders, NLP)
+- **Core Layer**: Cross-cutting concerns (config, logging, exceptions)
+
+**Benefits**: Testable, maintainable, framework-independent business logic.
+
+#### 2. Repository Pattern
+Abstracts data access through interfaces, allowing easy swapping of storage implementations.
+
+```python
+# Domain defines the contract
+class SessionRepositoryInterface(ABC):
+    @abstractmethod
+    def create_session(self, language: str) -> str: ...
+    
+# Infrastructure provides implementations
+class InMemorySessionRepository(SessionRepositoryInterface):
+    def create_session(self, language: str) -> str:
+        # Implementation details
+```
+
+**Current**: In-memory storage  
+**Future**: Can easily add PostgreSQL, Redis, or MongoDB implementations without changing business logic.
+
+#### 3. Dependency Injection (DI)
+FastAPI's DI system provides loose coupling and testability.
+
+```python
+# Dependencies module acts as a Service Locator
+def get_session_service(
+    repo: SessionRepositoryInterface = Depends(get_session_repository)
+) -> SessionService:
+    return SessionService(repo)
+
+# Routes receive dependencies automatically
+@router.post("/start")
+async def start_conversation(
+    session_service: SessionService = Depends(get_session_service)
+):
+    # Use service without knowing implementation details
+```
+
+**Benefits**: Easy mocking for tests, singleton management, clear dependencies.
+
+#### 4. Service Layer Pattern
+Encapsulates business logic separate from HTTP/infrastructure concerns.
+
+- **ChatbotService**: NLP processing, response generation, confidence scoring
+- **SessionService**: Session validation, history management, language rules
+
+**Benefits**: Business logic reusable across different interfaces (REST, GraphQL, CLI).
+
+#### 5. Strategy Pattern (implicit)
+Different NLP strategies can be plugged in (currently TF-IDF, future: transformers, LLMs).
+
+#### 6. Factory Pattern
+Centralized object creation in [dependencies.py](app/api/dependencies.py) manages lifecycles and ensures singletons.
+
+### Layer Responsibilities
+
+| Layer | Responsibility | Examples |
+|-------|----------------|----------|
+| **API** | HTTP handling, validation, serialization | Routes, Pydantic schemas |
+| **Domain** | Business rules, core logic | Services, entities, interfaces |
+| **Infrastructure** | External systems, I/O | Repositories, data loaders, NLP |
+| **Core** | Cross-cutting concerns | Config, logging, exceptions |
+
+### Key Architectural Decisions
+
+1. **Stateless API**: Sessions stored server-side, identified by UUID
+2. **In-Memory Storage**: Fast prototyping; easily replaced with persistent storage
+3. **TF-IDF NLP**: Lightweight, no external API dependencies, good for FAQ-style conversations
+4. **Pydantic Models**: Type safety, automatic validation, OpenAPI documentation
+5. **Async/Await**: Non-blocking I/O for scalability (ready for database operations)
 
 ## API Endpoints
 
@@ -223,68 +560,86 @@ GET /api/v1/conversations/debug/sessions
 
 Ensure you have the following installed:
 - **Python 3.11 or 3.12** (3.12 recommended for latest features)
-- **pip** (latest version: `pip install --upgrade pip`)
+- **uv** - Ultra-fast Python package manager ([installation guide](https://github.com/astral-sh/uv))
 - **git** for cloning the repository
-- **Virtual environment** (venv or virtualenv)
 - **(Optional) Docker** for containerized deployment
 
 ### Local Development Setup
 
-#### Option 1: Quick Setup (Recommended)
+#### Option 1: Quick Setup with Makefile (Recommended)
 
 ```bash
 # Clone the repository
 git clone https://github.com/AlyonaCIA/FastAPI_Chatbot.git
 cd FastAPI_Chatbot
 
-# One-command setup (installs everything)
-./run_local.sh -i
+# Install uv if not already installed
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Verify installation
-python -m app.main
+# Install all dependencies (including dev tools)
+make install-dev
+
+# Run the application
+make run
+
+# Or run in development mode with auto-reload
+make dev
 ```
 
-#### Option 2: Manual Setup
+#### Option 2: Manual Setup with uv
 
 ```bash
 # 1. Clone the repository
 git clone https://github.com/AlyonaCIA/FastAPI_Chatbot.git
 cd FastAPI_Chatbot
 
-# 2. Create virtual environment
-python3.11 -m venv venv
+# 2. Install uv (if not already installed)
+curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# 3. Activate virtual environment
-source venv/bin/activate  # Linux/macOS
+# 3. Create virtual environment with uv
+uv venv
+
+# 4. Activate virtual environment
+source .venv/bin/activate  # Linux/macOS
 # or
-venv\Scripts\activate  # Windows
-
-# 4. Upgrade pip
-pip install --upgrade pip
+.venv\Scripts\activate  # Windows
 
 # 5. Install production dependencies
-pip install -r requirements.txt
+uv pip install -e .
 
 # 6. Install development dependencies (for contributors)
-pip install -r requirements-dev.txt
+uv pip install -e ".[dev]"
 
 # 7. Install pre-commit hooks (optional but recommended)
 pre-commit install
 
 # 8. Verify installation
-python -m pytest tests/
+pytest tests/
 ```
 
 ### Environment Configuration
 
-Create a `.env` file for custom configuration (optional):
+Copy the example environment file and customize as needed:
 
 ```bash
-# .env
+# Copy example file
+cp .env.example .env
+
+# Edit with your preferred editor
+nano .env
+```
+
+Example `.env` configuration:
+```bash
+# Application Settings
 DEBUG=false
 LOG_LEVEL=INFO
+
+# Server Configuration
 HOST=0.0.0.0
 PORT=8080
+
+# Chatbot Settings
 DEFAULT_LANGUAGE=en
 CONFIDENCE_THRESHOLD=0.3
 SESSION_TTL_HOURS=24
@@ -294,7 +649,11 @@ MAX_SESSIONS=1000
 ### Running the Application
 
 ```bash
-# Development mode (auto-reload enabled)
+# Using Makefile (recommended)
+make run              # Production mode
+make dev              # Development mode with auto-reload
+
+# Direct execution
 python -m app.main
 
 # Or with uvicorn directly
@@ -347,64 +706,56 @@ docker-compose logs -f
 
 ## Development
 
-### Development Environment Setup
+### Quick Development Commands
 
-The project provides a comprehensive development script that mirrors the CI/CD pipeline:
+The project includes a comprehensive Makefile for common development tasks:
 
 ```bash
-# One-time setup - Install all dev dependencies and tools
-./run_local.sh -i
+# See all available commands
+make help
 
-# Format code (black + isort)
-./run_local.sh -f
+# Setup and Installation
+make install          # Install production dependencies
+make install-dev      # Install all dependencies including dev tools
+make sync             # Sync dependencies from lock file
+make update           # Update dependencies to latest versions
 
-# Run linting checks (flake8 + mypy)
-./run_local.sh -l
+# Code Quality
+make format           # Format code with black and ruff
+make lint             # Run ruff linter
+make type-check       # Run mypy type checking
+make security         # Run bandit security checks
+make pre-commit       # Run all pre-commit hooks
 
-# Run all tests with coverage
-./run_local.sh -t
+# Testing
+make test             # Run all tests
+make test-cov         # Run tests with coverage report
 
-# Run security scan
-./run_local.sh -s
+# CI/CD
+make ci               # Run full CI pipeline locally
 
-# Run complete CI pipeline locally (recommended before pushing)
-./run_local.sh -n
+# Running
+make run              # Run application
+make dev              # Run in development mode with auto-reload
 
-# Help and options
-./run_local.sh -h
+# Cleanup
+make clean            # Remove build artifacts and cache files
 ```
 
-### Using Nox (Recommended Workflow)
-
-Nox provides isolated virtual environments for each task, ensuring reproducibility:
+### Using Makefile (Recommended Workflow)
 
 ```bash
-# List all available sessions
-nox -l
+# Initial setup
+make install-dev
 
-# Format code automatically
-nox -s format
+# Development cycle
+make format           # Format your code
+make lint             # Check for issues
+make test             # Run tests
+make type-check       # Verify types
 
-# Check formatting without modifying (CI mode)
-nox -s format -- --check
-
-# Run linting (flake8 + mypy)
-nox -s lint
-
-# Run tests with coverage (single Python version)
-nox -s tests
-
-# Run tests across all Python versions (3.11, 3.12)
-nox -s tests --python 3.11 3.12
-
-# Run security vulnerability scan
-nox -s security
-
-# Clean all build artifacts and caches
-nox -s clean
-
-# Run complete CI pipeline (format check + lint + tests + security)
-nox -s ci
+# Before committing
+make ci               # Run full pipeline locally
 ```
 
 ### Pre-commit Hooks
@@ -448,8 +799,8 @@ pytest tests/integration/    # Integration tests only
 # Run with coverage
 pytest --cov=app --cov-report=html
 
-# Run with nox (isolated environment)
-nox -s tests
+# Run with uv
+uv run pytest tests/
 ```
 
 ### Test Structure
@@ -528,10 +879,10 @@ The project includes a comprehensive GitHub Actions workflow that ensures code q
 - **JUnit XML**: Test result artifacts for analysis
 - **Minimum Coverage**: 70% threshold enforced
 
-#### 3. **Nox Validation**
-- **Isolated Environments**: Replicates production conditions
+#### 3. **GitHub Actions Validation**
+- **Automated CI/CD**: Runs on every PR and push to main
 - **Full Pipeline**: format → lint → test → security
-- **Dependency Caching**: Faster builds with pip cache
+- **Dependency Caching**: Faster builds with uv cache
 - **Artifact Upload**: Coverage reports and test results
 
 #### 4. **Integration Testing**
@@ -555,9 +906,9 @@ The pipeline runs automatically on:
 ### Caching Strategy
 
 Optimized build times through intelligent caching:
-- **Pip Dependencies**: Cached per Python version
-- **Nox Environments**: Cached per session
-- **Cache Key**: Based on requirements files hash
+- **uv Cache**: Python packages cached per version
+- **GitHub Actions**: Workflow caching per commit
+- **Cache Key**: Based on pyproject.toml hash
 
 ### Artifacts & Reports
 
@@ -578,7 +929,7 @@ Generated artifacts include:
 
 ### Training Data
 
-The chatbot uses structured JSON data (`kindly-bot.json`) with:
+The chatbot uses structured JSON data (`chatbot-data.json`) with:
 - **Greetings**: Welcome messages in multiple languages
 - **Dialogues**: Sample-based conversations with replies
 - **Keywords**: Topic-based responses
@@ -626,12 +977,12 @@ pre-commit install
 # 6. Make your changes following TDD
 # - Write tests first (tests/)
 # - Implement feature
-# - Run tests: nox -s tests
+# - Run tests: make test
 
 # 7. Run all quality checks locally
-nox -s ci
-# or
-./run_local.sh -n
+make ci
+# or use individual commands
+make format lint type-check test-cov security
 
 # 8. Commit with conventional commit message
 git add .
@@ -719,10 +1070,10 @@ def process_message(
 
 Before submitting, ensure:
 - [ ] Code follows project style guide
-- [ ] All tests pass (`nox -s tests`)
+- [ ] All tests pass (`make test`)
 - [ ] Code coverage is maintained or improved
-- [ ] Type checking passes (`nox -s lint`)
-- [ ] Security scan passes (`nox -s security`)
+- [ ] Type checking passes (`make type-check`)
+- [ ] Security scan passes (`make security`)
 - [ ] Documentation is updated (if needed)
 - [ ] Commit messages follow conventional format
 - [ ] Branch is up to date with main
