@@ -5,10 +5,10 @@ import logging
 from typing import List
 
 import pytest
-from backend.config.data_loader import chatbot_data
 
 # ✅ Local Application Imports
-from backend.services.chatbot_service import ChatbotService
+from app.domain.services.chatbot import ChatbotService
+from app.infrastructure.data.loaders.chatbot_data import chatbot_data
 
 
 @pytest.fixture
